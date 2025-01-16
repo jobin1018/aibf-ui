@@ -1,3 +1,5 @@
+import tailwindcssAnimate from "tailwindcss-animate";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
@@ -69,29 +71,29 @@ export default {
         "typing": {
           "0%": {
             width: "0%",
-            visibility: "hidden"
+            visibility: "hidden",
           },
           "100%": {
             width: "20%",
             borderColor: "transparent",
-          }
+          },
         },
         "blink": {
           "50%": {
-            borderColor: "transparent"
+            borderColor: "transparent",
           },
           "100%": {
             borderColor: "none",
-            border: "hidden"
-          }
-        }
+            border: "hidden",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "typing": "typing 3s steps(20) alternate, blink .7s"
+        "typing": "typing 3s steps(20) alternate, blink .7s",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 };
