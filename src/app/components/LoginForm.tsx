@@ -1,6 +1,3 @@
-import { Link } from "react-router-dom";
-
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,87 +5,91 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  GoogleOAuthProvider,
-  GoogleLogin,
-  CredentialResponse,
-} from "@react-oauth/google";
+import { API_ENDPOINTS } from "@/constants/api";
+import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
-const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
-  const token = credentialResponse.credential;
-
-  if (!token) {
-    console.error("No credential received from Google");
-    return;
-  }
-
-  try {
-    const response = await axios.post(
-      "http://localhost:8003/users/api/google-signin/",
-      {
-        token: token,
-      }
-    );
-    console.log("JWT:", response.data);
-
-    // Store JWT for authenticated requests
-    localStorage.setItem("access", response.data.access);
-    localStorage.setItem("refresh", response.data.refresh);
-  } catch (error) {
-    console.error("Google Sign-In error:", error);
-  }
-};
+interface GoogleJwtPayload {
+  email: string;
+  name: string;
+  picture: string;
+  given_name: string;
+  family_name: string;
+}
 
 export function LoginForm() {
+  const navigate = useNavigate();
+  const GOOGLE_CLIENT_ID =
+    "455863006727-90ker8gpi3f5gol6939p65irjpf6e3o1.apps.googleusercontent.com";
+
+  const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+    try {
+      console.log(
+        "Google login success, sending to backend:",
+        credentialResponse
+      );
+
+      const { data } = await axios.post(API_ENDPOINTS.GOOGLE_SIGNIN, {
+        token: credentialResponse.credential,
+      });
+
+      console.log("Backend response:", data);
+
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+
+      // Decode the Google JWT to get user details
+      const decoded: GoogleJwtPayload = jwtDecode(
+        credentialResponse.credential
+      );
+
+      console.log("Decoded token:", decoded);
+
+      // Store user details
+      const userDetails = {
+        name: decoded.name,
+        email: decoded.email,
+        picture: decoded.picture,
+      };
+      localStorage.setItem("user_details", JSON.stringify(userDetails));
+
+      if (data.new_user) {
+        // Redirect to profile completion for new users
+        navigate("/profile");
+      } else {
+        // Redirect to conference page for existing users
+        navigate("/conference");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("API error response:", error.response?.data);
+      }
+    }
+  };
+
+  const handleError = () => {
+    console.error("Google Sign In Failed");
+  };
+
   return (
-    <Card className="mx-auto max-w-sm mt-40">
+    <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
+        <CardTitle className="text-2xl text-center">Login</CardTitle>
+        <CardDescription className="text-center">
+          Sign in with your Google account
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link to="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
-            </div>
-            <Input id="password" type="password" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-          {/* <Button variant="outline" className="w-full"> */}
-          <GoogleOAuthProvider clientId="455863006727-90ker8gpi3f5gol6939p65irjpf6e3o1.apps.googleusercontent.com">
-            <GoogleLogin
-              onSuccess={handleLoginSuccess}
-              onError={() => console.error("Google Sign-In failed")}
-            />
-          </GoogleOAuthProvider>
-          {/* </Button> */}
-        </div>
-        <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <Link to="#" className="underline">
-            Sign up
-          </Link>
-        </div>
+      <CardContent className="flex justify-center">
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+          <GoogleLogin
+            onSuccess={handleLoginSuccess}
+            onError={handleError}
+            useOneTap
+          />
+        </GoogleOAuthProvider>
       </CardContent>
     </Card>
   );

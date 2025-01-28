@@ -1,69 +1,75 @@
 import Container from "@/components/ui/Container";
-import { TextEffect } from "@/components/ui/TextEffect";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const TypographyH1 = () => {
   return (
-    <div className="flex flex-col items-start">
-      <TextEffect
-        className="text-2xl font-extrabold tracking-tight sm:text-2xl md:text-3xl lg:text-5xl mb-2"
-        per="char"
-        as="h1"
-        preset="blur"
+    <div className="flex flex-col items-start space-y-2">
+      <h1
+        className="text-4xl font-black tracking-tight 
+        sm:text-5xl md:text-6xl lg:text-7xl 
+        bg-gradient-to-r from-primary via-primary to-primary/70 
+        text-transparent bg-clip-text
+        dark:from-white dark:via-white dark:to-primary"
       >
         Australian
-      </TextEffect>
-      <TextEffect
-        className="text-2xl font-extrabold tracking-tight sm:text-2xl md:text-3xl lg:text-5xl mb-2"
-        per="char"
-        as="h1"
-        preset="blur"
+      </h1>
+      <h1
+        className="text-4xl font-black tracking-tight 
+        sm:text-5xl md:text-6xl lg:text-7xl 
+        bg-gradient-to-r from-primary via-primary to-primary/70 
+        text-transparent bg-clip-text
+        dark:from-white dark:via-white dark:to-primary"
       >
         Indian
-      </TextEffect>
-      <TextEffect
-        className="text-2xl font-extrabold tracking-tight sm:text-2xl md:text-3xl lg:text-5xl mb-2"
-        per="char"
-        as="h1"
-        preset="blur"
+      </h1>
+      <h1
+        className="text-4xl font-black tracking-tight 
+        sm:text-5xl md:text-6xl lg:text-7xl 
+        bg-gradient-to-r from-primary via-primary to-primary/70 
+        text-transparent bg-clip-text
+        dark:from-white dark:via-white dark:to-primary"
       >
         Brethren Fellowship
-      </TextEffect>
+      </h1>
     </div>
   );
 };
 
 export function TypographyBlockquote() {
   return (
-    <div className="flex flex-col items-start">
-      <blockquote className="mt-6 border-l-2 pl-1 italic text-sm">-
-        <TextEffect per="word" preset="blur">
-          "How good and pleasant it is when brothers live together in unity!"
-        </TextEffect>
+    <div className="mt-6 max-w-2xl">
+      <blockquote className="border-l-4 border-primary pl-4 py-2 italic text-lg text-foreground">
+        "How good and pleasant it is when brothers live together in unity!"
       </blockquote>
     </div>
   );
 }
 
 export const Hero = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="my-10 py-20">
+    <div className="relative overflow-hidden py-20 bg-background">
+      <div className="absolute inset-0 bg-grid-primary/[0.04] pointer-events-none"></div>
       <Container>
-        {/* <div
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/2351719/pexels-photo-2351719.jpeg')",
-            height: "100%",
-            // marginTop: "-70px",
-            // fontSize: "50px",
-            // backgroundSize: "cover",
-            // backgroundRepeat: "no-repeat",
-          }}
-          className="bg-cover bg-center"
-        > */}
-        {/* </div> */}
-        <TypographyH1 />
-        <TypographyBlockquote />
+        <div className="relative z-10 max-w-4xl mx-auto text-center md:text-left">
+          <TypographyH1 />
+          <TypographyBlockquote />
+          <div className="mt-10 flex items-center justify-center sm:justify-start">
+            <Button
+              size="lg"
+              className="group w-full sm:w-auto"
+              onClick={() => navigate("/conference")}
+            >
+              Register Now
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </div>
+        </div>
       </Container>
+      <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-gradient-to-br from-primary to-background blur-3xl"></div>
     </div>
   );
 };

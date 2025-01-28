@@ -1,5 +1,4 @@
 import { Home } from "./Home";
-import { RegisterForm } from "./RegisterForm";
 import { Hero } from "./Hero";
 
 export const Layout = () => {
@@ -7,7 +6,6 @@ export const Layout = () => {
     <>
       <Hero />
       <Home />
-      <RegisterForm />
     </>
   );
 };
