@@ -6,7 +6,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { API_ENDPOINTS } from "@/constants/api";
-import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  GoogleOAuthProvider,
+} from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -31,6 +35,12 @@ export function LoginForm() {
         credentialResponse
       );
 
+      // Add type check to ensure credential exists
+      if (!credentialResponse.credential) {
+        console.error("No credential received");
+        return;
+      }
+
       const { data } = await axios.post(API_ENDPOINTS.GOOGLE_SIGNIN, {
         token: credentialResponse.credential,
       });
@@ -41,17 +51,21 @@ export function LoginForm() {
       localStorage.setItem("refresh", data.refresh);
 
       // Decode the Google JWT to get user details
-      const decoded: GoogleJwtPayload = jwtDecode(
-        credentialResponse.credential
-      );
+      const decoded = jwtDecode(credentialResponse.credential);
+      if (!decoded || typeof decoded !== "object") {
+        console.error("Invalid JWT payload");
+        return;
+      }
 
-      console.log("Decoded token:", decoded);
+      const googleJwtPayload: GoogleJwtPayload = decoded as GoogleJwtPayload;
+
+      console.log("Decoded token:", googleJwtPayload);
 
       // Store user details
       const userDetails = {
-        name: decoded.name,
-        email: decoded.email,
-        picture: decoded.picture,
+        name: googleJwtPayload.name,
+        email: googleJwtPayload.email,
+        picture: googleJwtPayload.picture,
       };
       localStorage.setItem("user_details", JSON.stringify(userDetails));
 
