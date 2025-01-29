@@ -1,4 +1,4 @@
-export const API_ROOT_URL = "http://localhost:8003";
+export const API_ROOT_URL = "https://aibf-backend.up.railway.app";
 
 export const API_ENDPOINTS = {
   GOOGLE_SIGNIN: `${API_ROOT_URL}/users/api/google-signin/`,
