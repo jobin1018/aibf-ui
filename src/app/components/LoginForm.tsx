@@ -13,9 +13,9 @@ import {
 } from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
-interface GoogleJwtPayload {
+interface GoogleJwtPayload extends JwtPayload {
   email: string;
   name: string;
   picture: string;
@@ -57,7 +57,7 @@ export function LoginForm() {
         return;
       }
 
-      const googleJwtPayload: GoogleJwtPayload = decoded as GoogleJwtPayload;
+      const googleJwtPayload = decoded as GoogleJwtPayload;
 
       console.log("Decoded token:", googleJwtPayload);
 
