@@ -8,9 +8,21 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import PageNotFound from "./PageNotFound.tsx";
-import { Dashboard } from "./app/components/Dashboard.tsx";
 import { Layout } from "./app/components/Layout.tsx";
-import { LoginForm } from "./app/components/LoginForm.tsx";
+import { Conference } from "./app/components/Conference.tsx";
+import { ContactForm } from "./app/components/ContactForm.tsx";
+import { DashboardPage } from "./app/dashboard/page";
+
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = localStorage.getItem("access") !== null;
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  return <>{children}</>;
+};
 
 const router = createBrowserRouter([
   {
@@ -20,19 +32,35 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to={"/home"} />,
-      },
-      {
-        path: "home",
         element: <Layout />,
       },
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        path: "home",
+        element: <Navigate to="/" />,
       },
       {
         path: "login",
-        element: <LoginForm />,
+        element: <Conference />,
+      },
+      {
+        path: "conference",
+        element: (
+          <ProtectedRoute>
+            <Conference />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "contact",
+        element: <ContactForm />,
       },
     ],
   },

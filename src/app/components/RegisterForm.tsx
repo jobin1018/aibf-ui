@@ -1,246 +1,349 @@
-import Container from "@/components/ui/Container";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useFieldArray } from "react-hook-form";
+import { z } from "zod";
+import { useEffect, useState } from "react";
+import { Separator } from "@/components/ui/separator";
+import axios from "axios";
+import { API_ENDPOINTS } from "@/constants/api";
+import { toast } from "@/components/ui/toast";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+  email: z.string().email({
+    message: "Please enter a valid email.",
   }),
-  address: z.string().min(2, {
-    message: "Address must be at least 2 characters.",
+  adultsCount: z.string().min(1, {
+    message: "Please enter number of adults.",
   }),
-  city: z.string().min(2, {
-    message: "City must be at least 2 characters.",
+  kidsCount: z.string().min(0, {
+    message: "Please enter number of kids.",
   }),
-  state: z.string().min(2, {
-    message: "State must be at least 2 characters.",
-  }),
-  phone: z.string().min(8, {
-    message: "Phone number must be at least 8 digits.",
-  }),
-  email: z.string().email().min(5, {
-    message: "Invalid email",
-  }),
-  adultsCount: z.coerce.number().min(1, {
-    message: "Min number should be 1.",
-  }),
-  kidsCount: z.coerce.number().min(0, {
-    message: "Min number should be 0",
-  }),
+  additionalAdults: z
+    .array(
+      z.object({
+        name: z
+          .string()
+          .min(2, { message: "Name must be at least 2 characters." }),
+      })
+    )
+    .optional(),
+  additionalKids: z
+    .array(
+      z.object({
+        name: z
+          .string()
+          .min(2, { message: "Name must be at least 2 characters." }),
+      })
+    )
+    .optional(),
 });
 
-export const RegisterForm = () => {
-  const [openDialog, setOpenDialog] = useState(false);
+interface RegisterFormProps {
+  onSuccess?: (refetchEvents: () => void) => void;
+}
+
+export function RegisterForm({ onSuccess }: RegisterFormProps) {
+  const [eventId, setEventId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      address: "",
+      email: "",
+      adultsCount: "",
+      kidsCount: "",
+      additionalAdults: [],
+      additionalKids: [],
     },
   });
-  const onSubmit = async (values: any) => {
-    // async request which may result error
+
+  const {
+    fields: additionalAdultsFields,
+    append: appendAdult,
+    remove: removeAdult,
+  } = useFieldArray({
+    control: form.control,
+    name: "additionalAdults",
+  });
+
+  const {
+    fields: additionalKidsFields,
+    append: appendKid,
+    remove: removeKid,
+  } = useFieldArray({
+    control: form.control,
+    name: "additionalKids",
+  });
+
+  const fetchLatestEvent = async () => {
     try {
-      // await fetch()
-      console.log("submit", values);
-      setOpenDialog(false);
-    } catch (e) {
-      // handle your error
+      const userDetailsString = localStorage.getItem("user_details");
+
+      if (!userDetailsString) {
+        console.error("No user details found");
+        return null;
+      }
+
+      const userDetails = JSON.parse(userDetailsString);
+      const userEmail = userDetails.email;
+
+      if (!userEmail) {
+        console.error("No user email found in user details");
+        return null;
+      }
+
+      const response = await axios.get(API_ENDPOINTS.EVENTS, {
+        params: {
+          email: userEmail,
+        },
+      });
+
+      if (response.data && response.data.length > 0) {
+        return response.data[0].id;
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      return null;
     }
   };
 
+  useEffect(() => {
+    const fetchLatestEventAsync = async () => {
+      const eventId = await fetchLatestEvent();
+      if (eventId) {
+        setEventId(eventId);
+      } else {
+        setError("No events found");
+      }
+      setIsLoading(false);
+    };
+
+    fetchLatestEventAsync();
+  }, []);
+
+  useEffect(() => {
+    const adultsCount = parseInt(form.getValues("adultsCount") || "0", 10);
+    const currentAdultsLength = additionalAdultsFields.length;
+
+    if (currentAdultsLength < adultsCount) {
+      // Add more adult fields
+      for (let i = currentAdultsLength; i < adultsCount; i++) {
+        appendAdult({ name: "" });
+      }
+    } else if (currentAdultsLength > adultsCount) {
+      // Remove excess adult fields
+      for (let i = currentAdultsLength; i > adultsCount; i--) {
+        removeAdult(i - 1);
+      }
+    }
+  }, [form.watch("adultsCount")]);
+
+  useEffect(() => {
+    const kidsCount = parseInt(form.getValues("kidsCount") || "0", 10);
+    const currentKidsLength = additionalKidsFields.length;
+
+    if (currentKidsLength < kidsCount) {
+      // Add more kid fields
+      for (let i = currentKidsLength; i < kidsCount; i++) {
+        appendKid({ name: "" });
+      }
+    } else if (currentKidsLength > kidsCount) {
+      // Remove excess kid fields
+      for (let i = currentKidsLength; i > kidsCount; i--) {
+        removeKid(i - 1);
+      }
+    }
+  }, [form.watch("kidsCount")]);
+
+  useEffect(() => {
+    // Get user details from localStorage
+    const userDetailsStr = localStorage.getItem("user_details");
+    if (userDetailsStr) {
+      try {
+        const userDetails = JSON.parse(userDetailsStr);
+        if (userDetails.email) {
+          form.setValue("email", userDetails.email);
+        }
+      } catch (error) {
+        console.error("Error parsing user details:", error);
+      }
+    }
+  }, [form]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!eventId) {
+      console.error("No event ID available");
+      return;
+    }
+
+    try {
+      const registrationData = {
+        event_id: eventId,
+        email: values.email,
+        no_of_adults: parseInt(values.adultsCount, 10),
+        no_of_children: parseInt(values.kidsCount, 10),
+        additional_adults:
+          values.additionalAdults?.map((adult) => adult.name).join(", ") || "",
+        additional_kids:
+          values.additionalKids?.map((kid) => kid.name).join(", ") || "",
+      };
+
+      console.log(
+        "Registration Payload:",
+        JSON.stringify(registrationData, null, 2)
+      );
+
+      const response = await axios.post(
+        API_ENDPOINTS.REGISTRATION,
+        registrationData
+      );
+
+      // Handle successful registration
+      console.log("Registration successful:", response.data);
+
+      // Show success toast
+      toast({
+        message: "Registration successful!",
+        type: "success",
+      });
+
+      // Reset form after successful submission
+      form.reset();
+
+      // Pass refetch function to onSuccess callback
+      onSuccess?.(() => fetchLatestEvent());
+    } catch (error) {
+      // Handle registration error
+      console.error("Registration failed:", error);
+
+      // Show error toast
+      toast({
+        message: "Registration failed. Please try again.",
+        type: "error",
+      });
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <Container>
-      <div className="my-10">
-        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-          <DialogTrigger asChild>
-            <Button className="mt-2" variant="default">
-              Register here !
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] h-full max-h-[96%] p-4">
-            <ScrollArea className="p-4">
-              <DialogHeader className="mb-5 gap-2">
-                <DialogTitle>Register for the conference</DialogTitle>
-                <DialogDescription>
-                  Fill up <b>Basic Info</b> & <b>Additional Info</b>. Click
-                  submit when you're done.
-                </DialogDescription>
-              </DialogHeader>
-              <Tabs className="flex flex-col gap-8" defaultValue="basic-info">
-                <TabsList>
-                  <TabsTrigger value="basic-info">Basic Info</TabsTrigger>
-                  <TabsTrigger value="additional">Additional Info</TabsTrigger>
-                </TabsList>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                  >
-                    <TabsContent defaultChecked value="basic-info">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Name" {...field} />
-                            </FormControl>
-                            <FormDescription>Your full name.</FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="address"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Address</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="145 Victoria Parade, Fitzroy VIC 3065, Australia"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="city"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>City</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Melbourne" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="state"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>State</FormLabel>
-                            <FormControl>
-                              <Input placeholder="VIC" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Phone</FormLabel>
-                            <FormControl>
-                              <Input placeholder="61 4 1234 5678" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="example@gmail.com"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </TabsContent>
-                    <TabsContent value="additional">
-                      <FormField
-                        control={form.control}
-                        name="adultsCount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              No.of people attending(adults)
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="Total no.of adults"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="kidsCount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>No.of people attending(kids)</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="Total no.of kids"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button className="mt-8" type="submit">
-                        Submit
-                      </Button>
-                    </TabsContent>
-                  </form>
-                </Form>
-                <DialogFooter>
-                  {/* <Button type="submit">Save changes</Button> */}
-                </DialogFooter>
-              </Tabs>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </Container>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="your.email@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Additional Attendees</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="adultsCount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Number of Adults</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="0" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="kidsCount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Number of Kids</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="0" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {additionalAdultsFields.length > 0 && (
+          <>
+            <Separator className="my-4" />
+            <h3 className="text-lg font-semibold">Adults</h3>
+            {additionalAdultsFields.map((field, index) => (
+              <FormField
+                key={field.id}
+                control={form.control}
+                name={`additionalAdults.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Adult Name ({index + 1})</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+          </>
+        )}
+
+        {additionalKidsFields.length > 0 && (
+          <>
+            <Separator className="my-4" />
+            <h3 className="text-lg font-semibold">Kids</h3>
+            {additionalKidsFields.map((field, index) => (
+              <FormField
+                key={field.id}
+                control={form.control}
+                name={`additionalKids.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kid Name ({index + 1})</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+          </>
+        )}
+
+        <Button type="submit" className="w-full">
+          Register
+        </Button>
+      </form>
+    </Form>
   );
-};
+}
