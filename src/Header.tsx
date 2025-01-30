@@ -39,23 +39,46 @@ export const Header = () => {
           <div className="flex md:hidden absolute left-0">
             <Sheet>
               <SheetTrigger>
-                <Menu className="h-6 w-6" />
+                <Menu className="h-6 w-6 text-foreground hover:text-primary transition-colors" />
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <NavigationMenu>
-                  <NavigationMenuList className="flex flex-col gap-4">
+              <SheetContent
+                side="left"
+                className="w-[300px] sm:w-[400px] bg-background/95 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60"
+              >
+                <div className="flex flex-col h-full">
+                  {/* Mobile Menu Header */}
+                  <div className="flex items-center justify-between border-b pb-4 mb-6">
+                    <div className="flex items-center space-x-4">
+                      <a
+                        href="/"
+                        className="text-xl font-bold tracking-tight text-foreground hover:text-primary transition-colors"
+                      >
+                        AIBF
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex-grow space-y-2">
                     {routes.map((item, index) => (
-                      <NavigationMenuItem key={index}>
-                        <NavigationMenuLink
-                          href={item.href}
-                          className={navigationMenuTriggerStyle()}
-                        >
-                          {item.label}
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
+                      <a
+                        key={index}
+                        href={item.href}
+                        className="block px-4 py-3 text-lg font-medium text-foreground 
+                        hover:bg-primary/10 hover:text-primary 
+                        rounded-lg transition-all duration-300 
+                        focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        {item.label}
+                      </a>
                     ))}
-                  </NavigationMenuList>
-                </NavigationMenu>
+                  </nav>
+
+                  {/* Mobile Menu Footer */}
+                  <div className="mt-auto border-t pt-4">
+                    <UserMenu />
+                  </div>
+                </div>
               </SheetContent>
             </Sheet>
           </div>
