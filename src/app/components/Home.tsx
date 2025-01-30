@@ -20,7 +20,7 @@ export function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative mb-12">
       <h2
-        className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight 
+        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight 
         bg-gradient-to-r from-primary via-primary to-primary/70 
         text-transparent bg-clip-text
         dark:from-white dark:via-white dark:to-primary"
