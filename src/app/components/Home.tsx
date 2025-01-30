@@ -83,36 +83,32 @@ export const Home = () => {
           {/* Conference Details Section */}
           <div className="space-y-6">
             <Card
-              className="p-6 bg-card text-card-foreground 
-              border-none 
-              shadow-xl hover:shadow-2xl 
+              className="p-4 sm:p-6 bg-card text-card-foreground 
+              border 
+              shadow-sm hover:shadow-md 
               transition-all duration-300 
-              hover:scale-[1.02] 
+              hover:scale-[1.01] 
               group
               relative 
-              overflow-hidden
-              before:absolute before:inset-0 
-              before:bg-gradient-to-br 
-              before:from-primary/10 
-              before:to-transparent 
-              before:opacity-0 
-              hover:before:opacity-100 
-              before:transition-opacity 
-              before:duration-300"
+              overflow-hidden"
             >
               <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <Badge variant="default" className="text-xs sm:text-sm">
-                    <Calendar className="mr-1 sm:mr-2 h-3 w-3" /> Upcoming Event
+                <div className="flex items-center justify-between mb-3">
+                  <Badge variant="default" className="text-[0.6rem] sm:text-xs">
+                    <Calendar className="mr-1 h-2 w-2 sm:h-3 sm:w-3" /> Upcoming
+                    Event
                   </Badge>
-                  <Badge variant="secondary" className="text-xs sm:text-sm">
+                  <Badge
+                    variant="secondary"
+                    className="text-[0.6rem] sm:text-xs"
+                  >
                     Booking Open
                   </Badge>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <h3
-                    className="text-xl sm:text-2xl font-bold tracking-tight 
+                    className="text-lg sm:text-xl font-bold tracking-tight 
                     group-hover:text-primary 
                     transition-colors 
                     bg-gradient-to-r from-foreground via-primary to-primary/70 
@@ -123,25 +119,25 @@ export const Home = () => {
 
                   <div className="space-y-2">
                     <div className="flex items-center text-muted-foreground text-xs sm:text-sm">
-                      <Users className="mr-1 sm:mr-2 h-3 sm:h-4 w-3 sm:w-4 text-primary" />
+                      <Users className="mr-1 h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                       <span>300+ Attendees Expected</span>
                     </div>
                     <div className="flex items-center text-muted-foreground text-xs sm:text-sm">
-                      <Calendar className="mr-1 sm:mr-2 h-3 sm:h-4 w-3 sm:w-4 text-primary" />
+                      <Calendar className="mr-1 h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                       <span>4-Day Family Conference</span>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-6 flex justify-center items-center w-full">
-                  <Button
-                    variant="default"
-                    className="group w-auto px-3 text-xs sm:text-sm"
-                    onClick={() => navigate("/conference")}
-                  >
-                    View Details
-                    <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                  </Button>
+                  <div className="mt-4">
+                    <Button
+                      variant="default"
+                      className="w-full group text-xs sm:text-sm"
+                      onClick={() => navigate("/conference")}
+                    >
+                      View Details
+                      <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Card>
