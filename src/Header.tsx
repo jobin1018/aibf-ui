@@ -76,7 +76,9 @@ export const Header = () => {
 
                   {/* Mobile Menu Footer */}
                   <div className="mt-auto border-t pt-4">
-                    <UserMenu />
+                    <div className="flex justify-center">
+                      <UserMenu />
+                    </div>
                   </div>
                 </div>
               </SheetContent>
@@ -114,7 +116,9 @@ export const Header = () => {
           {/* Right side buttons */}
           <div className="flex-none flex items-center space-x-4">
             <ModeToggle />
-            <UserMenu />
+            <div className="hidden md:block">
+              <UserMenu />
+            </div>
           </div>
         </div>
       </Container>
