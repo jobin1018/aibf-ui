@@ -39,6 +39,7 @@ export function LoginForm() {
   const [newUserToken, setNewUserToken] = useState("");
 
   const GOOGLE_CLIENT_ID =
+    import.meta.env.VITE_GOOGLE_CLIENT_ID ||
     "455863006727-90ker8gpi3f5gol6939p65irjpf6e3o1.apps.googleusercontent.com";
 
   const handleError = (error: any) => {
@@ -168,17 +169,42 @@ export function LoginForm() {
 
       <Dialog
         open={isUserDetailsModalOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            // Optional: Add logic if you want to prevent closing the modal
-            // For now, we'll allow it
-            setIsUserDetailsModalOpen(open);
-          }
+        onOpenChange={() => {
+          // Do nothing to prevent closing
+          toast({
+            title: "Profile Completion Required",
+            description: "You must complete your profile to continue.",
+            type: "error",
+            message: "",
+          });
         }}
       >
-        <DialogContent>
+        <DialogContent
+          // Additional prevention of closing
+          onEscapeKeyDown={(e) => {
+            e.preventDefault();
+            toast({
+              title: "Profile Completion Required",
+              description: "You must complete your profile to continue.",
+              type: "error",
+              message: "",
+            });
+          }}
+          onPointerDownOutside={(e) => {
+            e.preventDefault();
+            toast({
+              title: "Profile Completion Required",
+              description: "You must complete your profile to continue.",
+              type: "error",
+              message: "",
+            });
+          }}
+        >
           <DialogHeader>
             <DialogTitle>Complete Your Profile</DialogTitle>
+            <p className="text-sm text-muted-foreground">
+              You must complete your profile to access the application
+            </p>
           </DialogHeader>
           <UserDetailsForm
             email={newUserEmail}

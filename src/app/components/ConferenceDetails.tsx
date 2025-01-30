@@ -81,17 +81,6 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
     fetchLatestEvent();
   }, []);
 
-  const handleRegisterClick = () => {
-    onRegisterClick(() => {
-      // Callback to update registration status immediately
-      setIsRegistered(true);
-      fetchLatestEvent();
-
-      // Call optional registration success callback
-      onRegistrationSuccess?.();
-    });
-  };
-
   if (loading) {
     return (
       <div className="py-16 bg-background">
@@ -99,11 +88,11 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Skeleton Poster */}
             <div className="relative group">
-              <div 
+              <div
                 className="aspect-[3/4] rounded-2xl overflow-hidden 
                 bg-gray-200 dark:bg-gray-700 animate-pulse"
               />
-              <div 
+              <div
                 className="absolute top-4 right-4 
                 bg-gray-300 dark:bg-gray-600 
                 w-24 h-8 rounded-full"
@@ -120,12 +109,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               {/* Skeleton Grid */}
               <div className="grid md:grid-cols-2 gap-4">
                 {[1, 2, 3, 4].map((item) => (
-                  <div 
+                  <div
                     key={item}
                     className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                     rounded-xl p-4 flex items-center space-x-4 animate-pulse"
                   >
-                    <div 
+                    <div
                       className="bg-gray-300 dark:bg-gray-600 
                       p-3 rounded-full w-12 h-12"
                     />
@@ -138,7 +127,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               </div>
 
               {/* Skeleton Button */}
-              <div 
+              <div
                 className="h-12 bg-gray-200 dark:bg-gray-700 
                 rounded-lg w-full lg:w-2/3 animate-pulse"
               />
@@ -156,12 +145,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Skeleton Poster */}
             <div className="relative">
-              <div 
+              <div
                 className="aspect-[3/4] rounded-2xl 
                 bg-gray-200 dark:bg-gray-700 
                 animate-pulse"
               />
-              <div 
+              <div
                 className="absolute top-4 right-4 
                 bg-gray-300 dark:bg-gray-600 
                 w-24 h-8 rounded-full animate-pulse"
@@ -178,12 +167,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               {/* Skeleton Grid */}
               <div className="grid md:grid-cols-2 gap-4">
                 {[1, 2, 3, 4].map((item) => (
-                  <div 
+                  <div
                     key={item}
                     className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                     rounded-xl p-4 flex items-center space-x-4 animate-pulse"
                   >
-                    <div 
+                    <div
                       className="bg-gray-300 dark:bg-gray-600 
                       p-3 rounded-full w-12 h-12"
                     />
@@ -196,7 +185,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               </div>
 
               {/* Skeleton Button */}
-              <div 
+              <div
                 className="h-12 bg-gray-200 dark:bg-gray-700 
                 rounded-lg w-full lg:w-2/3 animate-pulse"
               />
@@ -242,7 +231,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
           <div className="space-y-8">
             <div>
               <h1
-                className="text-4xl font-extrabold tracking-tight 
+                className="text-2xl sm:text-4xl font-extrabold tracking-tight 
                 bg-gradient-to-r from-foreground via-primary to-primary/70 
                 text-transparent bg-clip-text
                 dark:from-white dark:via-white dark:to-primary
@@ -250,7 +239,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               >
                 {event.name}
               </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-sm sm:text-lg text-muted-foreground leading-relaxed">
                 {event.description}
               </p>
             </div>
@@ -295,8 +284,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">{title}</h3>
-                      <p className="text-sm text-muted-foreground">{content}</p>
+                      <h3 className="font-semibold text-foreground text-sm sm:text-base">
+                        {title}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        {content}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -305,17 +298,18 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
 
             {/* Registration Button with Modern Styling */}
             <Button
-              size="lg"
-              className="w-full group relative 
-                bg-gradient-to-r from-primary to-primary/80 
-                hover:from-primary/90 hover:to-primary/70
-                text-primary-foreground
-                transition-all duration-300
-                hover:shadow-xl hover:scale-[1.02]"
-              onClick={handleRegisterClick}
-              disabled={isRegistered}
+              variant="default"
+              size="sm"
+              className="w-full lg:w-2/3 text-sm sm:text-base"
+              onClick={() => {
+                onRegisterClick(() => {
+                  setIsRegistered(true);
+                  onRegistrationSuccess && onRegistrationSuccess();
+                });
+              }}
+              disabled={isRegistered || loading}
             >
-              {isRegistered ? "Already Registered" : "Register Now"}
+              {isRegistered ? "Registered" : "Register Now"}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
 

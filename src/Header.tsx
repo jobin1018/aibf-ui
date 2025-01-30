@@ -36,7 +36,7 @@ export const Header = () => {
       <Container>
         <div className="relative flex h-16 items-center">
           {/* Mobile menu button */}
-          <div className="flex md:hidden">
+          <div className="flex md:hidden absolute left-0">
             <Sheet>
               <SheetTrigger>
                 <Menu className="h-6 w-6" />
@@ -60,20 +60,20 @@ export const Header = () => {
             </Sheet>
           </div>
 
-          {/* Logo */}
-          <div className="flex-none">
+          {/* Logo - centered */}
+          <div className="flex-1 flex justify-center items-center">
             <a
               href="/"
-              className="text-xl font-bold tracking-tight text-white hover:text-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="text-xl font-bold tracking-tight text-black dark:text-white hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               AIBF
             </a>
           </div>
 
           {/* Desktop navigation - pushed to the right */}
-          <div className="flex-1 flex justify-end">
+          <div className="flex-1 flex justify-end hidden md:flex">
             <NavigationMenu>
-              <NavigationMenuList className="hidden md:flex gap-4">
+              <NavigationMenuList className="gap-4">
                 {routes.map((item, index) => (
                   <NavigationMenuItem key={index}>
                     <NavigationMenuLink
@@ -89,7 +89,7 @@ export const Header = () => {
           </div>
 
           {/* Right side buttons */}
-          <div className="flex-none flex items-center space-x-4 ml-8">
+          <div className="flex-none flex items-center space-x-4">
             <ModeToggle />
             <UserMenu />
           </div>

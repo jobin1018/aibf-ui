@@ -72,15 +72,16 @@ export function ContactForm() {
 
   return (
     <Container>
-      <Card className="max-w-2xl mx-auto my-8">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">Contact Us</CardTitle>
-          <CardDescription className="text-center">
-            Have questions? We'd love to hear from you. Send us a message and
-            we'll respond as soon as possible.
+      <Card className="w-full max-w-md mx-auto mt-20 shadow-lg">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl text-center text-black dark:text-white font-bold">
+            Contact Us
+          </CardTitle>
+          <CardDescription className="text-center text-gray-900 dark:text-gray-200">
+            Have questions? We'd love to hear from you. Send us a message.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">

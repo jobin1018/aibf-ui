@@ -5,31 +5,31 @@ import { useNavigate } from "react-router-dom";
 
 export const TypographyH1 = () => {
   return (
-    <div className="flex flex-col items-start space-y-2">
+    <div className="flex flex-col items-start space-y-2 text-left">
       <h1
-        className="text-4xl font-black tracking-tight 
-        sm:text-5xl md:text-6xl lg:text-7xl 
+        className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight 
         bg-gradient-to-r from-primary via-primary to-primary/70 
         text-transparent bg-clip-text
-        dark:from-white dark:via-white dark:to-primary"
+        dark:from-white dark:via-white dark:to-primary
+        w-full"
       >
         Australian
       </h1>
       <h1
-        className="text-4xl font-black tracking-tight 
-        sm:text-5xl md:text-6xl lg:text-7xl 
+        className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight 
         bg-gradient-to-r from-primary via-primary to-primary/70 
         text-transparent bg-clip-text
-        dark:from-white dark:via-white dark:to-primary"
+        dark:from-white dark:via-white dark:to-primary
+        w-full"
       >
         Indian
       </h1>
       <h1
-        className="text-4xl font-black tracking-tight 
-        sm:text-5xl md:text-6xl lg:text-7xl 
+        className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight 
         bg-gradient-to-r from-primary via-primary to-primary/70 
         text-transparent bg-clip-text
-        dark:from-white dark:via-white dark:to-primary"
+        dark:from-white dark:via-white dark:to-primary
+        w-full"
       >
         Brethren Fellowship
       </h1>
@@ -39,8 +39,8 @@ export const TypographyH1 = () => {
 
 export function TypographyBlockquote() {
   return (
-    <div className="mt-6 max-w-2xl">
-      <blockquote className="border-l-4 border-primary pl-4 py-2 italic text-lg text-foreground">
+    <div className="mt-6 max-w-2xl text-left">
+      <blockquote className="border-l-0 sm:border-l-4 border-primary sm:pl-4 py-2 italic text-sm sm:text-lg text-foreground">
         "How good and pleasant it is when brothers live together in unity!"
       </blockquote>
     </div>
@@ -51,20 +51,20 @@ export const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative overflow-hidden py-20 bg-background">
+    <div className="relative overflow-hidden py-16 sm:py-20 bg-background">
       <div className="absolute inset-0 bg-grid-primary/[0.04] pointer-events-none"></div>
       <Container>
-        <div className="relative z-10 max-w-4xl mx-auto text-center md:text-left">
+        <div className="relative z-10 max-w-4xl mx-auto text-left">
           <TypographyH1 />
           <TypographyBlockquote />
-          <div className="mt-10 flex items-center justify-center sm:justify-start">
+          <div className="mt-8 sm:mt-10 flex items-center justify-start">
             <Button
-              size="lg"
-              className="group w-full sm:w-auto"
+              size="sm"
+              className="group w-auto px-3"
               onClick={() => navigate("/conference")}
             >
               Register Now
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
         </div>

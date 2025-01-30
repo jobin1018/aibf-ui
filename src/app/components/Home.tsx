@@ -20,14 +20,14 @@ export function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative mb-12">
       <h2
-        className="text-4xl font-extrabold tracking-tight 
+        className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight 
         bg-gradient-to-r from-primary via-primary to-primary/70 
         text-transparent bg-clip-text
         dark:from-white dark:via-white dark:to-primary"
       >
         {children}
       </h2>
-      <div className="absolute -bottom-2 left-0 w-20 h-1 bg-primary rounded"></div>
+      <div className="absolute -bottom-2 left-0 w-12 sm:w-20 h-1 bg-primary rounded"></div>
     </div>
   );
 }
@@ -102,15 +102,17 @@ export const Home = () => {
             >
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
-                  <Badge variant="default">
-                    <Calendar className="mr-2 h-4 w-4" /> Upcoming Event
+                  <Badge variant="default" className="text-xs sm:text-sm">
+                    <Calendar className="mr-1 sm:mr-2 h-3 w-3" /> Upcoming Event
                   </Badge>
-                  <Badge variant="secondary">Booking Open</Badge>
+                  <Badge variant="secondary" className="text-xs sm:text-sm">
+                    Booking Open
+                  </Badge>
                 </div>
 
                 <div className="space-y-4">
                   <h3
-                    className="text-2xl font-bold tracking-tight 
+                    className="text-xl sm:text-2xl font-bold tracking-tight 
                     group-hover:text-primary 
                     transition-colors 
                     bg-gradient-to-r from-foreground via-primary to-primary/70 
@@ -120,12 +122,12 @@ export const Home = () => {
                   </h3>
 
                   <div className="space-y-2">
-                    <div className="flex items-center text-muted-foreground">
-                      <Users className="mr-2 h-5 w-5 text-primary" />
+                    <div className="flex items-center text-muted-foreground text-xs sm:text-sm">
+                      <Users className="mr-1 sm:mr-2 h-3 sm:h-4 w-3 sm:w-4 text-primary" />
                       <span>300+ Attendees Expected</span>
                     </div>
-                    <div className="flex items-center text-muted-foreground">
-                      <Calendar className="mr-2 h-5 w-5 text-primary" />
+                    <div className="flex items-center text-muted-foreground text-xs sm:text-sm">
+                      <Calendar className="mr-1 sm:mr-2 h-3 sm:h-4 w-3 sm:w-4 text-primary" />
                       <span>4-Day Family Conference</span>
                     </div>
                   </div>
@@ -134,11 +136,11 @@ export const Home = () => {
                 <div className="mt-6 flex justify-center items-center w-full">
                   <Button
                     variant="default"
-                    className="group w-full"
+                    className="group w-auto px-3 text-xs sm:text-sm"
                     onClick={() => navigate("/conference")}
                   >
                     View Details
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </div>
               </div>
