@@ -25,7 +25,7 @@ export function Conference() {
   // If we're on /login path, show the login form
   const isLoginPath = window.location.pathname === "/login";
 
-  if (!isLoggedIn && !isLoginPath) {
+  if (!isLoggedIn && isLoginPath) {
     return <LoginForm />;
   }
 

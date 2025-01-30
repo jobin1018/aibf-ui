@@ -1,4 +1,5 @@
-export const API_ROOT_URL = "https://aibf-backend.up.railway.app";
+export const API_ROOT_URL =
+  import.meta.env.VITE_API_ROOT_URL || "https://aibf-backend.up.railway.app";
 
 export const API_ENDPOINTS = {
   GOOGLE_SIGNIN: `${API_ROOT_URL}/users/api/google-signin/`,

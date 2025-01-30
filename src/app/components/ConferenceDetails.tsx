@@ -93,11 +93,118 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
   };
 
   if (loading) {
-    return <div>Loading event details...</div>;
+    return (
+      <div className="py-16 bg-background">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Skeleton Poster */}
+            <div className="relative group">
+              <div 
+                className="aspect-[3/4] rounded-2xl overflow-hidden 
+                bg-gray-200 dark:bg-gray-700 animate-pulse"
+              />
+              <div 
+                className="absolute top-4 right-4 
+                bg-gray-300 dark:bg-gray-600 
+                w-24 h-8 rounded-full"
+              />
+            </div>
+
+            {/* Skeleton Details */}
+            <div className="space-y-8">
+              <div>
+                <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg mb-4 w-3/4 animate-pulse" />
+                <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+              </div>
+
+              {/* Skeleton Grid */}
+              <div className="grid md:grid-cols-2 gap-4">
+                {[1, 2, 3, 4].map((item) => (
+                  <div 
+                    key={item}
+                    className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                    rounded-xl p-4 flex items-center space-x-4 animate-pulse"
+                  >
+                    <div 
+                      className="bg-gray-300 dark:bg-gray-600 
+                      p-3 rounded-full w-12 h-12"
+                    />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Skeleton Button */}
+              <div 
+                className="h-12 bg-gray-200 dark:bg-gray-700 
+                rounded-lg w-full lg:w-2/3 animate-pulse"
+              />
+            </div>
+          </div>
+        </Container>
+      </div>
+    );
   }
 
   if (!event) {
-    return <div>No event details available</div>;
+    return (
+      <div className="py-16 bg-background">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Skeleton Poster */}
+            <div className="relative">
+              <div 
+                className="aspect-[3/4] rounded-2xl 
+                bg-gray-200 dark:bg-gray-700 
+                animate-pulse"
+              />
+              <div 
+                className="absolute top-4 right-4 
+                bg-gray-300 dark:bg-gray-600 
+                w-24 h-8 rounded-full animate-pulse"
+              />
+            </div>
+
+            {/* Skeleton Details */}
+            <div className="space-y-8">
+              <div>
+                <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg mb-4 w-3/4 animate-pulse" />
+                <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+              </div>
+
+              {/* Skeleton Grid */}
+              <div className="grid md:grid-cols-2 gap-4">
+                {[1, 2, 3, 4].map((item) => (
+                  <div 
+                    key={item}
+                    className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                    rounded-xl p-4 flex items-center space-x-4 animate-pulse"
+                  >
+                    <div 
+                      className="bg-gray-300 dark:bg-gray-600 
+                      p-3 rounded-full w-12 h-12"
+                    />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Skeleton Button */}
+              <div 
+                className="h-12 bg-gray-200 dark:bg-gray-700 
+                rounded-lg w-full lg:w-2/3 animate-pulse"
+              />
+            </div>
+          </div>
+        </Container>
+      </div>
+    );
   }
 
   return (

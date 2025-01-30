@@ -73,8 +73,40 @@ export const DashboardPage = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p>Loading registrations...</p>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-6">
+          AIBF 2025 - Registered Users
+        </h1>
+        <Table>
+          <TableCaption>Loading registrations...</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>User Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>State</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Additional Attendees (Adults)</TableHead>
+              <TableHead>Additional Attendees (Kids)</TableHead>
+              <TableHead>Registration Date</TableHead>
+              <TableHead>Payment Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {[1, 2, 3, 4, 5].map((row) => (
+              <TableRow key={row}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((cell) => (
+                  <TableCell key={cell}>
+                    <div
+                      className="h-4 bg-gray-200 dark:bg-gray-700 
+                      rounded w-full animate-pulse"
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     );
   }
@@ -91,7 +123,36 @@ export const DashboardPage = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">AIBF 2025 - Registered Users</h1>
       {registrations.length === 0 ? (
-        <p className="text-center">No registrations found.</p>
+        <Table>
+          <TableCaption>No registrations found</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>User Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>State</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Additional Attendees (Adults)</TableHead>
+              <TableHead>Additional Attendees (Kids)</TableHead>
+              <TableHead>Registration Date</TableHead>
+              <TableHead>Payment Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {[1, 2, 3, 4, 5].map((row) => (
+              <TableRow key={row}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((cell) => (
+                  <TableCell key={cell}>
+                    <div
+                      className="h-4 bg-gray-200 dark:bg-gray-700 
+                      rounded w-full animate-pulse"
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       ) : (
         <Table>
           <TableCaption>List of Registered Users</TableCaption>

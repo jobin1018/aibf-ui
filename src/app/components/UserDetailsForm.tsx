@@ -1,12 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
@@ -15,18 +8,30 @@ import { API_ENDPOINTS } from "@/constants/api";
 interface UserDetailsFormProps {
   email: string;
   token: string;
-  onSuccess: (response: any) => void;
+  onSuccess: () => void;
 }
 
-export function UserDetailsForm({
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+}
+
+export default function UserDetailsForm({
   email,
   token,
   onSuccess,
 }: UserDetailsFormProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
+    email: email,
     phone: "",
-    organization: "",
+    address: "",
+    city: "",
+    state: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,75 +41,90 @@ export function UserDetailsForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !token) {
+      alert("Missing authentication details. Please log in again.");
+      return;
+    }
+
     try {
-      const response = await axios.post(API_ENDPOINTS.COMPLETE_PROFILE, {
+      void (await axios.post(API_ENDPOINTS.COMPLETE_PROFILE, {
         ...formData,
-        email,
         token,
-      });
+      }));
 
       // Store user details
-      const userDetails = {
-        name: formData.name,
-        email: email,
-        phone: formData.phone,
-        organization: formData.organization,
-      };
-      localStorage.setItem("user_details", JSON.stringify(userDetails));
+      localStorage.setItem("user_details", JSON.stringify(formData));
 
-      onSuccess(response.data);
+      onSuccess();
     } catch (error) {
       console.error("Profile completion error:", error);
     }
   };
 
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>Complete Your Profile</CardTitle>
-        <CardDescription>Please provide additional details</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" value={email} disabled />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="organization">Organization</Label>
-            <Input
-              id="organization"
-              name="organization"
-              value={formData.organization}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full">
-            Complete Profile
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Full Name</Label>
+        <Input
+          id="name"
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" name="email" value={formData.email} disabled />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="phone">Phone Number</Label>
+        <Input
+          id="phone"
+          name="phone"
+          placeholder="Phone Number"
+          value={formData.phone}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="address">Address</Label>
+        <Input
+          id="address"
+          name="address"
+          placeholder="Street Address"
+          value={formData.address}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="city">City</Label>
+        <Input
+          id="city"
+          name="city"
+          placeholder="City"
+          value={formData.city}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="state">State</Label>
+        <Input
+          id="state"
+          name="state"
+          placeholder="State"
+          value={formData.state}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <Button type="submit" className="w-full">
+        Complete Profile
+      </Button>
+    </form>
   );
 }
