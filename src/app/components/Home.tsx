@@ -83,7 +83,7 @@ export const Home = () => {
           {/* Conference Details Section */}
           <div className="space-y-6">
             <Card
-              className="p-4 sm:p-6 bg-card text-card-foreground 
+              className="p-6 bg-card text-card-foreground 
               border 
               shadow-sm hover:shadow-md 
               transition-all duration-300 
@@ -93,49 +93,77 @@ export const Home = () => {
               overflow-hidden"
             >
               <div className="relative z-10">
-                <div className="flex items-center justify-between mb-3">
-                  <Badge variant="default" className="text-[0.6rem] sm:text-xs">
-                    <Calendar className="mr-1 h-2 w-2 sm:h-3 sm:w-3" /> Upcoming
-                    Event
+                <div className="flex items-center justify-between mb-4">
+                  <Badge variant="secondary" className="text-xs">
+                    Upcoming Event
                   </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="text-[0.6rem] sm:text-xs"
-                  >
+                  <Badge variant="default" className="text-xs">
                     Booking Open
                   </Badge>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <h3
-                    className="text-lg sm:text-xl font-bold tracking-tight 
+                    className="text-xl font-bold tracking-tight 
                     group-hover:text-primary 
-                    transition-colors 
-                    bg-gradient-to-r from-foreground via-primary to-primary/70 
-                    text-transparent bg-clip-text"
+                    transition-colors"
                   >
                     AIBF Annual Conference 2025
                   </h3>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center text-muted-foreground text-xs sm:text-sm">
-                      <Users className="mr-1 h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                      <span>300+ Attendees Expected</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center text-muted-foreground text-sm">
+                      <Calendar className="mr-2 h-4 w-4 text-primary" />
+                      <span>April 24-27, 2025</span>
                     </div>
-                    <div className="flex items-center text-muted-foreground text-xs sm:text-sm">
-                      <Calendar className="mr-1 h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                    <div className="flex items-center text-muted-foreground text-sm">
+                      <svg
+                        className="mr-2 h-4 w-4 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
                       <span>4-Day Family Conference</span>
+                    </div>
+                    <div className="flex items-center text-muted-foreground text-sm">
+                      <svg
+                        className="mr-2 h-4 w-4 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      <span>CYC The Island</span>
                     </div>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="pt-2">
                     <Button
                       variant="default"
-                      className="w-full group text-xs sm:text-sm"
+                      className="w-full group"
                       onClick={() => navigate("/conference")}
                     >
                       View Details
-                      <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Button>
                   </div>
                 </div>

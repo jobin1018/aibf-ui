@@ -12,6 +12,7 @@ import { Layout } from "./app/components/Layout.tsx";
 import { Conference } from "./app/components/Conference.tsx";
 import { ContactForm } from "./app/components/ContactForm.tsx";
 import { DashboardPage } from "./app/dashboard/page";
+import RegisterPage from "./app/pages/register/page";
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -47,6 +48,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Conference />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "register",
+        element: (
+          <ProtectedRoute>
+            <RegisterPage />
           </ProtectedRoute>
         ),
       },

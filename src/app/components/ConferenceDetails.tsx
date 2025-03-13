@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/Container";
-import { Calendar, Clock, MapPin, Users, ArrowRight } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  ArrowRight,
+  DollarSign,
+} from "lucide-react";
 import aibf_25_2_poster from "../../assets/aibf_25_2.jpeg";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -21,16 +28,16 @@ interface Event {
 }
 
 interface ConferenceDetailsProps {
-  onRegisterClick: (onSuccess: () => void) => void;
+  onRegisterClick: () => void;
   onRegistrationSuccess?: () => void;
 }
 
-// Utility function to calculate days between dates
-const calculateDaysBetween = (eventDate: string): number => {
+// Utility function to calculate days to the event
+const calculateDaysToEvent = (): number => {
   const today = new Date();
-  const event = new Date(eventDate);
-  const timeDiff = event.getTime() - today.getTime();
-  return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  const eventStart = new Date("2025-04-24");
+  const timeDiff = eventStart.getTime() - today.getTime();
+  return Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
 };
 
 export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
@@ -65,10 +72,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
         setIsRegistered(latestEvent.is_registered || false);
 
         // Calculate days to event
-        if (latestEvent.start_date) {
-          const days = calculateDaysBetween(latestEvent.start_date);
-          setDaysToEvent(days);
-        }
+        setDaysToEvent(calculateDaysToEvent());
       }
     } catch (error) {
       console.error("Error fetching event details:", error);
@@ -245,19 +249,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
             </div>
 
             {/* Modern Details Grid */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 {
                   icon: Calendar,
-                  title: "Date",
-                  content: `${event.start_date} - ${event.end_date}`,
-                },
-                {
-                  icon: Clock,
-                  title: "Time",
-                  content: `${formatTime(event.start_time)} - ${formatTime(
-                    event.end_time
-                  )}`,
+                  title: "Event Dates",
+                  content: "April 24 - 27, 2025",
                 },
                 {
                   icon: MapPin,
@@ -265,16 +262,37 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                   content: event.venue,
                 },
                 {
-                  icon: Users,
-                  title: "Capacity",
-                  content: "Limited to 500 attendees",
+                  icon: DollarSign,
+                  title: "Fee Structure",
+                  content: (
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span>Adult</span>
+                        <span className="font-semibold">$338</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Kids (9-13)</span>
+                        <span className="font-semibold">$254</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Kids (3-8)</span>
+                        <span className="font-semibold">$169</span>
+                      </div>
+                      <div className="flex justify-between text-green-600">
+                        <span>Kids under 3</span>
+                        <span className="font-semibold">Free</span>
+                      </div>
+                    </div>
+                  ),
+                  fullWidth: true,
                 },
-              ].map(({ icon: Icon, title, content }, index) => (
+              ].map(({ icon: Icon, title, content, fullWidth }, index) => (
                 <div
                   key={index}
-                  className="bg-card border rounded-xl p-4 
+                  className={`bg-card border rounded-xl p-4 
                   hover:shadow-md transition-all duration-300 
-                  hover:border-primary/50 group"
+                  hover:border-primary/50 group
+                  ${fullWidth ? "md:col-span-2" : ""}`}
                 >
                   <div className="flex items-center space-x-4">
                     <div
@@ -283,35 +301,31 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                     >
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
-                    <div>
+                    <div className="w-full">
                       <h3 className="font-semibold text-foreground text-sm sm:text-base">
                         {title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
+                      <div className="text-xs sm:text-sm text-muted-foreground">
                         {content}
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Registration Button with Modern Styling */}
-            <Button
-              variant="default"
-              size="sm"
-              className="w-full lg:w-2/3 text-sm sm:text-base"
-              onClick={() => {
-                onRegisterClick(() => {
-                  setIsRegistered(true);
-                  onRegistrationSuccess && onRegistrationSuccess();
-                });
-              }}
-              disabled={isRegistered || loading}
-            >
-              {isRegistered ? "Registered" : "Register Now"}
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
+            {/* Register Button */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                size="lg"
+                className="w-full lg:w-2/3"
+                onClick={onRegisterClick}
+                disabled={isRegistered}
+              >
+                {isRegistered ? "Already Registered" : "Register Now"}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
 
             {/* Registration Success Message */}
             {isRegistered && (
@@ -324,7 +338,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                 shadow-md"
               >
                 <h2 className="text-xl font-bold text-green-800 mb-2">
-                  Registration Confirmed!
+                  Thank you for your registration!
                 </h2>
                 <p className="text-green-600">
                   We look forward to seeing you at the event.
