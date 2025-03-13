@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import axios from "axios";
 import { API_ENDPOINTS } from "@/constants/api";
 import { toast } from "@/components/ui/toast";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -61,6 +62,7 @@ const formSchema = z.object({
 
 interface RegisterFormProps {
   onRegistrationComplete?: () => void;
+  onSuccess?: () => void;
 }
 
 const PRICES = {
@@ -468,6 +470,7 @@ interface PaymentDetailsProps {
 }
 
 export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
+  const navigate = useNavigate();
   const [registrationData, setRegistrationData] = useState<{
     event_id: string;
     email: string;
@@ -511,15 +514,21 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
       if (response.status === 201) {
         // Clear registration data from localStorage
         localStorage.removeItem("registration_data");
-        // Call the success callback
+        setRegistrationData(null);
+        toast({
+          message: "Registration completed successfully!",
+          type: "success",
+        });
         onSuccess?.();
+        navigate("/conference");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Registration submission failed:", error);
       const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to complete registration. Please try again.";
+        error instanceof Error
+          ? error.message
+          : (error as { response?: { data?: { message?: string } } })?.response
+              ?.data?.message || "An unknown error occurred";
       setError(errorMessage);
       toast({
         message: errorMessage,

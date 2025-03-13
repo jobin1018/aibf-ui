@@ -1,18 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/Container";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Users,
-  ArrowRight,
-  DollarSign,
-} from "lucide-react";
+import { Calendar, MapPin, ArrowRight, DollarSign } from "lucide-react";
 import aibf_25_2_poster from "../../assets/aibf_25_2.jpeg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_ENDPOINTS } from "@/constants/api";
-import { formatTime } from "@/utils/timeFormat";
 
 interface Event {
   id: number;
@@ -42,7 +34,6 @@ const calculateDaysToEvent = (): number => {
 
 export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
   onRegisterClick,
-  onRegistrationSuccess,
 }) => {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);

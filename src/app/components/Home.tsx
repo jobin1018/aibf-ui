@@ -12,7 +12,7 @@ import aibf_25_4_poster from "../../assets/aibf_25_4.jpeg";
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Calendar, Users } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
