@@ -256,48 +256,167 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                   icon: DollarSign,
                   title: "Fee Structure",
                   content: (
-                    <div className="space-y-1">
-                      <div className="flex justify-between">
-                        <span>Adult</span>
-                        <span className="font-semibold">$338</span>
+                    <div className="space-y-4">
+                      {/* 4-Day Package */}
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-primary">
+                          4-Day Package (Thu-Sun)
+                        </h4>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span>Adult (14+)</span>
+                            <span className="font-semibold">$340</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Children (9-13)</span>
+                            <span className="font-semibold">$255</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Children (3-8)</span>
+                            <span className="font-semibold">$170</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Includes 3 nights accommodation & 9 meals (3*Breakfast
+                          included)
+                        </p>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Kids (9-13)</span>
-                        <span className="font-semibold">$254</span>
+
+                      {/* 3-Day Package */}
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-primary">
+                          3-Day Package (Fri-Sun)
+                        </h4>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span>Adult (14+)</span>
+                            <span className="font-semibold">$250</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Children (9-13)</span>
+                            <span className="font-semibold">$190</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Children (3-8)</span>
+                            <span className="font-semibold">$130</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Includes 2 nights accommodation & 8 meals (2*Breakfast
+                          included)
+                        </p>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Kids (3-8)</span>
-                        <span className="font-semibold">$169</span>
+
+                      {/* 2-Day Package */}
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-primary">
+                          2-Day Package (Sat-Sun)
+                        </h4>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span>Adult (14+)</span>
+                            <span className="font-semibold">$135</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Children (9-13)</span>
+                            <span className="font-semibold">$105</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Children (3-8)</span>
+                            <span className="font-semibold">$70</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Includes 1 night accommodation & 5 meals (1*Breakfast
+                          included)
+                        </p>
                       </div>
-                      <div className="flex justify-between text-green-600">
-                        <span>Kids under 3</span>
-                        <span className="font-semibold">Free</span>
+
+                      {/* Day Visitors */}
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-primary">
+                          Day Visitors
+                        </h4>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span>Entry Fee (Per Visit)</span>
+                            <span className="font-semibold">$16</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Meal - Adult (14+)</span>
+                            <span className="font-semibold">$20</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Meal - Children (9-13)</span>
+                            <span className="font-semibold">$15</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Meal - Children (3-8)</span>
+                            <span className="font-semibold">$10</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Additional Information */}
+                      <div className="space-y-1 text-xs text-muted-foreground mt-4">
+                        <p>
+                          • Infants under 3 years{" "}
+                          <span className="text-green-600 font-medium">
+                            free
+                          </span>{" "}
+                          for whole camp
+                        </p>
+                        <p>• All prices include GST</p>
+                        <div className="mt-2 space-y-1">
+                          <p className="font-medium text-primary">
+                            • Check-in:{" "}
+                            <span className="text-foreground">
+                              Thursday 4:00 PM
+                            </span>
+                          </p>
+                          <p className="font-medium text-primary">
+                            • Check-out:{" "}
+                            <span className="text-foreground">
+                              Sunday 1:00 PM
+                            </span>
+                          </p>
+                        </div>
+                        <p>
+                          • Registration fees are{" "}
+                          <span className="text-green-600 font-medium">
+                            nil
+                          </span>{" "}
+                          this year
+                        </p>
+                        <p>
+                          • Members can donate funds to support AIBF camp
+                          expenses
+                        </p>
                       </div>
                     </div>
                   ),
-                  fullWidth: true,
                 },
-              ].map(({ icon: Icon, title, content, fullWidth }, index) => (
+              ].map((item, index) => (
                 <div
                   key={index}
                   className={`bg-card border rounded-xl p-4 
                   hover:shadow-md transition-all duration-300 
                   hover:border-primary/50 group
-                  ${fullWidth ? "md:col-span-2" : ""}`}
+                  ${item.title === "Fee Structure" ? "md:col-span-2" : ""}`}
                 >
                   <div className="flex items-center space-x-4">
                     <div
                       className="bg-primary/10 p-3 rounded-full 
                       group-hover:bg-primary/20 transition-colors"
                     >
-                      <Icon className="h-5 w-5 text-primary" />
+                      <item.icon className="h-5 w-5 text-primary" />
                     </div>
                     <div className="w-full">
                       <h3 className="font-semibold text-foreground text-sm sm:text-base">
-                        {title}
+                        {item.title}
                       </h3>
                       <div className="text-xs sm:text-sm text-muted-foreground">
-                        {content}
+                        {item.content}
                       </div>
                     </div>
                   </div>

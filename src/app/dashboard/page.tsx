@@ -9,40 +9,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import axios from "axios";
-import { toast } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
 import { API_ENDPOINTS } from "@/constants/api";
 import { Badge } from "@/components/ui/badge";
 
 // Define the type for user registration
 interface UserRegistration {
-  user_name: string;
+  id: string;
+  name: string;
   email: string;
-  city: string;
-  state: string;
   phone: string;
-  additional_adults: number;
-  additional_kids: number;
+  selected_package: string;
+  no_of_adults: number;
+  no_of_children_9_13: number;
+  no_of_children_3_8: number;
+  additional_adults: string;
+  additional_kids_9_13: string;
+  additional_kids_3_8: string;
   registration_date: string;
-  payment_status: boolean;
+  payment_status: string;
 }
 
-export const DashboardPage = () => {
+export function DashboardPage() {
   const [registrations, setRegistrations] = useState<UserRegistration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Utility function to format date
-  const formatRegistrationDate = (isoDateString: string) => {
-    const date = new Date(isoDateString);
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZoneName: "short",
-    }).format(date);
-  };
 
   useEffect(() => {
     const fetchRegistrations = async () => {
@@ -63,7 +54,6 @@ export const DashboardPage = () => {
           title: "Error",
           description: "Unable to fetch registrations",
           variant: "destructive",
-          message: "",
         });
       }
     };
@@ -158,35 +148,53 @@ export const DashboardPage = () => {
           <TableCaption>List of Registered Users</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>User Name</TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>State</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Additional Attendees (Adults)</TableHead>
-              <TableHead>Additional Attendees (Kids)</TableHead>
+              <TableHead>Package</TableHead>
+              <TableHead>No. of Adults</TableHead>
+              <TableHead>Additional Adults</TableHead>
+              <TableHead>No. of Children (9-13)</TableHead>
+              <TableHead>No. of Children (3-8)</TableHead>
+              <TableHead>Additional Kids (9-13)</TableHead>
+              <TableHead>Additional Kids (3-8)</TableHead>
               <TableHead>Registration Date</TableHead>
               <TableHead>Payment Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {registrations.map((registration, index) => (
-              <TableRow key={index}>
-                <TableCell>{registration.user_name}</TableCell>
+            {registrations.map((registration) => (
+              <TableRow key={registration.id}>
+                <TableCell>{registration.name}</TableCell>
                 <TableCell>{registration.email}</TableCell>
-                <TableCell>{registration.city}</TableCell>
-                <TableCell>{registration.state}</TableCell>
                 <TableCell>{registration.phone}</TableCell>
+                <TableCell>{registration.selected_package}</TableCell>
+                <TableCell>{registration.no_of_adults}</TableCell>
                 <TableCell>{registration.additional_adults}</TableCell>
-                <TableCell>{registration.additional_kids}</TableCell>
+                <TableCell>{registration.no_of_children_9_13}</TableCell>
+                <TableCell>{registration.no_of_children_3_8}</TableCell>
+                <TableCell>{registration.additional_kids_9_13}</TableCell>
+                <TableCell>{registration.additional_kids_3_8}</TableCell>
                 <TableCell>
-                  {formatRegistrationDate(registration.registration_date)}
+                  {registration.registration_date
+                    ? new Date(
+                        registration.registration_date
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "N/A"}
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={registration.payment_status ? "success" : "error"}
+                    variant={
+                      registration.payment_status === "paid"
+                        ? "success"
+                        : "destructive"
+                    }
                   >
-                    {registration.payment_status ? "Paid" : "Pending"}
+                    {registration.payment_status}
                   </Badge>
                 </TableCell>
               </TableRow>
@@ -196,4 +204,4 @@ export const DashboardPage = () => {
       )}
     </div>
   );
-};
+}

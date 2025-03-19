@@ -10,6 +10,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { UserMenu } from "./app/components/UserMenu";
+import { Logo } from "./components/Logo";
 
 const routes = [
   {
@@ -35,8 +36,18 @@ export const Header = () => {
     <header className="border-b mb-2 sm:mb-5">
       <Container>
         <div className="relative flex h-16 items-center">
+          {/* Logo - leftmost position */}
+          <div className="flex-none">
+            <a
+              href="/"
+              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <Logo />
+            </a>
+          </div>
+
           {/* Mobile menu button */}
-          <div className="flex md:hidden absolute left-0">
+          <div className="flex md:hidden ml-4">
             <Sheet>
               <SheetTrigger>
                 <Menu className="h-6 w-6 text-foreground hover:text-primary transition-colors" />
@@ -51,9 +62,9 @@ export const Header = () => {
                     <div className="flex items-center space-x-4">
                       <a
                         href="/"
-                        className="text-xl font-bold tracking-tight text-foreground hover:text-primary transition-colors"
+                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        AIBF
+                        <Logo />
                       </a>
                     </div>
                   </div>
@@ -83,16 +94,6 @@ export const Header = () => {
                 </div>
               </SheetContent>
             </Sheet>
-          </div>
-
-          {/* Logo - centered */}
-          <div className="flex-1 flex justify-center items-center">
-            <a
-              href="/"
-              className="text-xl font-bold tracking-tight text-black dark:text-white hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              AIBF
-            </a>
           </div>
 
           {/* Desktop navigation - pushed to the right */}

@@ -22,7 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import UserDetailsForm from "@/app/components/UserDetailsForm"; // Import UserDetailsForm
-import { toast } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
 
 interface GoogleJwtPayload extends JwtPayload {
   email: string;
@@ -133,7 +133,7 @@ export function LoginForm() {
   const handleProfileComplete = () => {
     toast({
       title: "User Created",
-      message: "Profile Completed Successfully",
+      description: "Profile Completed Successfully",
     });
     setIsUserDetailsModalOpen(false);
     navigate("/conference");
@@ -174,8 +174,7 @@ export function LoginForm() {
           toast({
             title: "Profile Completion Required",
             description: "You must complete your profile to continue.",
-            type: "error",
-            message: "",
+            variant: "destructive",
           });
         }}
       >
@@ -186,8 +185,7 @@ export function LoginForm() {
             toast({
               title: "Profile Completion Required",
               description: "You must complete your profile to continue.",
-              type: "error",
-              message: "",
+              variant: "destructive",
             });
           }}
           onPointerDownOutside={(e) => {
@@ -195,8 +193,7 @@ export function LoginForm() {
             toast({
               title: "Profile Completion Required",
               description: "You must complete your profile to continue.",
-              type: "error",
-              message: "",
+              variant: "destructive",
             });
           }}
         >

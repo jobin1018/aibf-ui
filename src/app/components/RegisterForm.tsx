@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Form,
   FormControl,
@@ -6,22 +6,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "../../components/ui/separator";
 import axios from "axios";
-import { API_ENDPOINTS } from "@/constants/api";
-import { toast } from "@/components/ui/toast";
+import { API_ENDPOINTS } from "../../constants/api";
+import { toast } from "../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email.",
   }),
+  package: z
+    .string({
+      required_error: "Please select a package.",
+    })
+    .min(1, {
+      message: "Please select a package.",
+    }),
   adultsCount: z.string().min(0, {
     message: "Please enter number of adults.",
   }),
@@ -66,9 +80,26 @@ interface RegisterFormProps {
 }
 
 const PRICES = {
-  adult: 338,
-  kids913: 254,
-  kids38: 169,
+  "4-Day Package (Thu-Sun)": {
+    adult: 340,
+    kids913: 255,
+    kids38: 170,
+  },
+  "3-Day Package (Fri-Sun)": {
+    adult: 250,
+    kids913: 190,
+    kids38: 130,
+  },
+  "2-Day Package (Sat-Sun)": {
+    adult: 135,
+    kids913: 105,
+    kids38: 70,
+  },
+  "Day Visitors": {
+    adult: 36, // Entry + 1 meal
+    kids913: 31, // Entry + 1 meal
+    kids38: 26, // Entry + 1 meal
+  },
 };
 
 const bankDetails = {
@@ -86,6 +117,7 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
+      package: "",
       adultsCount: "0",
       kids9to13Count: "",
       kids3to8Count: "",
@@ -251,6 +283,12 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
   }, [form]);
 
   const calculateTotalFee = () => {
+    const selectedPackage = form.getValues("package");
+    if (!selectedPackage) return 0;
+
+    const packagePrices = PRICES[selectedPackage as keyof typeof PRICES];
+    if (!packagePrices) return 0;
+
     const additionalAdultsCount = parseInt(
       form.getValues("adultsCount") || "0",
       10
@@ -264,9 +302,9 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
     const kids3to8Count = parseInt(form.getValues("kids3to8Count") || "0", 10);
 
     return (
-      totalAdultsCount * PRICES.adult +
-      kids9to13Count * PRICES.kids913 +
-      kids3to8Count * PRICES.kids38
+      totalAdultsCount * packagePrices.adult +
+      kids9to13Count * packagePrices.kids913 +
+      kids3to8Count * packagePrices.kids38
     );
   };
 
@@ -282,15 +320,17 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
       const registrationData = {
         event_id: eventId,
         email: values.email,
-        no_of_adults: parseInt(values.adultsCount, 10),
-        no_of_children_9to13: parseInt(values.kids9to13Count, 10),
-        no_of_children_3to8: parseInt(values.kids3to8Count, 10),
+        selected_package: values.package,
+        no_of_adults: 1 + parseInt(values.adultsCount, 10),
+        no_of_children_9_13: parseInt(values.kids9to13Count, 10),
+        no_of_children_3_8: parseInt(values.kids3to8Count, 10),
         additional_adults:
           values.additionalAdults?.map((adult) => adult.name).join(", ") || "",
-        additional_kids_9to13:
+        additional_kids_9_13:
           values.additionalKids9to13?.map((kid) => kid.name).join(", ") || "",
-        additional_kids_3to8:
+        additional_kids_3_8:
           values.additionalKids3to8?.map((kid) => kid.name).join(", ") || "",
+        totalAmount: calculateTotalFee(),
       };
 
       // Store registration data in localStorage for payment step
@@ -298,7 +338,6 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
         "registration_data",
         JSON.stringify({
           ...registrationData,
-          totalAmount: calculateTotalFee(),
         })
       );
 
@@ -307,8 +346,9 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
     } catch (error) {
       console.error("Registration validation failed:", error);
       toast({
-        message: "Please check your registration details and try again.",
-        type: "error",
+        title: "Registration Failed",
+        description: "Please check your registration details and try again.",
+        variant: "destructive",
       });
     }
   };
@@ -336,6 +376,36 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
               <FormControl>
                 <Input placeholder="your.email@example.com" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="package"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Select Package</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a package" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white dark:bg-gray-950 z-50">
+                  <SelectItem value="4-Day Package (Thu-Sun)">
+                    4-Day Package (Thu-Sun)
+                  </SelectItem>
+                  <SelectItem value="3-Day Package (Fri-Sun)">
+                    3-Day Package (Fri-Sun)
+                  </SelectItem>
+                  <SelectItem value="2-Day Package (Sat-Sun)">
+                    2-Day Package (Sat-Sun)
+                  </SelectItem>
+                  <SelectItem value="Day Visitors">Day Visitors</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -474,12 +544,13 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
   const [registrationData, setRegistrationData] = useState<{
     event_id: string;
     email: string;
+    selected_package: string;
     no_of_adults: number;
-    no_of_children_9to13: number;
-    no_of_children_3to8: number;
+    no_of_children_9_13: number;
+    no_of_children_3_8: number;
     additional_adults: string;
-    additional_kids_9to13: string;
-    additional_kids_3to8: string;
+    additional_kids_9_13: string;
+    additional_kids_3_8: string;
     totalAmount: number;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -489,10 +560,12 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
     const data = localStorage.getItem("registration_data");
     if (data) {
       setRegistrationData(JSON.parse(data));
+      console.log("registrationData", registrationData);
     }
   }, []);
 
   const handleCompleteRegistration = async () => {
+    console.log("registrationData", registrationData);
     if (!registrationData) return;
 
     setIsSubmitting(true);
@@ -502,12 +575,13 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
       const response = await axios.post(API_ENDPOINTS.REGISTRATION, {
         event_id: registrationData.event_id,
         email: registrationData.email,
+        selected_package: registrationData.selected_package,
         no_of_adults: registrationData.no_of_adults,
-        no_of_children_9to13: registrationData.no_of_children_9to13,
-        no_of_children_3to8: registrationData.no_of_children_3to8,
+        no_of_children_9_13: registrationData.no_of_children_9_13,
+        no_of_children_3_8: registrationData.no_of_children_3_8,
         additional_adults: registrationData.additional_adults,
-        additional_kids_9to13: registrationData.additional_kids_9to13,
-        additional_kids_3to8: registrationData.additional_kids_3to8,
+        additional_kids_9_13: registrationData.additional_kids_9_13,
+        additional_kids_3_8: registrationData.additional_kids_3_8,
         total_amount: registrationData.totalAmount,
       });
 
@@ -516,8 +590,8 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
         localStorage.removeItem("registration_data");
         setRegistrationData(null);
         toast({
-          message: "Registration completed successfully!",
-          type: "success",
+          title: "Success",
+          description: "Registration completed successfully!",
         });
         onSuccess?.();
         navigate("/conference");
@@ -531,8 +605,9 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
               ?.data?.message || "An unknown error occurred";
       setError(errorMessage);
       toast({
-        message: errorMessage,
-        type: "error",
+        title: "Registration Failed",
+        description: errorMessage,
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -553,56 +628,94 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
 
       {/* Price Breakdown */}
       <div className="space-y-3">
-        {/* Adults */}
-        <div className="flex items-center justify-between py-2 border-b">
-          <div>
-            <p className="font-medium">Adults</p>
-            <p className="text-sm text-gray-500">
-              {1 + registrationData.no_of_adults} × ${PRICES.adult}
-            </p>
-          </div>
-          <span className="font-medium">
-            ${(1 + registrationData.no_of_adults) * PRICES.adult}
-          </span>
+        <div className="text-lg font-semibold mb-4">
+          Selected Package: {registrationData.selected_package}
         </div>
 
-        {/* Kids 9-13 */}
-        {registrationData.no_of_children_9to13 > 0 && (
-          <div className="flex items-center justify-between py-2 border-b">
-            <div>
-              <p className="font-medium">Kids (9-13)</p>
-              <p className="text-sm text-gray-500">
-                {registrationData.no_of_children_9to13} × ${PRICES.kids913}
-              </p>
+        {registrationData.selected_package &&
+        PRICES[registrationData.selected_package as keyof typeof PRICES] ? (
+          <>
+            {/* Adults */}
+            <div className="flex items-center justify-between py-2 border-b">
+              <div>
+                <p className="font-medium">Adults</p>
+                <p className="text-sm text-gray-500">
+                  {registrationData.no_of_adults} × $
+                  {
+                    PRICES[
+                      registrationData.selected_package as keyof typeof PRICES
+                    ].adult
+                  }
+                </p>
+              </div>
+              <span className="font-medium">
+                $
+                {registrationData.no_of_adults *
+                  PRICES[
+                    registrationData.selected_package as keyof typeof PRICES
+                  ].adult}
+              </span>
             </div>
-            <span className="font-medium">
-              ${registrationData.no_of_children_9to13 * PRICES.kids913}
-            </span>
-          </div>
-        )}
 
-        {/* Kids 3-8 */}
-        {registrationData.no_of_children_3to8 > 0 && (
-          <div className="flex items-center justify-between py-2 border-b">
-            <div>
-              <p className="font-medium">Kids (3-8)</p>
-              <p className="text-sm text-gray-500">
-                {registrationData.no_of_children_3to8} × ${PRICES.kids38}
-              </p>
+            {/* Kids 9-13 */}
+            {registrationData.no_of_children_9_13 > 0 && (
+              <div className="flex items-center justify-between py-2 border-b">
+                <div>
+                  <p className="font-medium">Kids (9-13)</p>
+                  <p className="text-sm text-gray-500">
+                    {registrationData.no_of_children_9_13} × $
+                    {
+                      PRICES[
+                        registrationData.selected_package as keyof typeof PRICES
+                      ].kids913
+                    }
+                  </p>
+                </div>
+                <span className="font-medium">
+                  $
+                  {registrationData.no_of_children_9_13 *
+                    PRICES[
+                      registrationData.selected_package as keyof typeof PRICES
+                    ].kids913}
+                </span>
+              </div>
+            )}
+
+            {/* Kids 3-8 */}
+            {registrationData.no_of_children_3_8 > 0 && (
+              <div className="flex items-center justify-between py-2 border-b">
+                <div>
+                  <p className="font-medium">Kids (3-8)</p>
+                  <p className="text-sm text-gray-500">
+                    {registrationData.no_of_children_3_8} × $
+                    {
+                      PRICES[
+                        registrationData.selected_package as keyof typeof PRICES
+                      ].kids38
+                    }
+                  </p>
+                </div>
+                <span className="font-medium">
+                  $
+                  {registrationData.no_of_children_3_8 *
+                    PRICES[
+                      registrationData.selected_package as keyof typeof PRICES
+                    ].kids38}
+                </span>
+              </div>
+            )}
+
+            {/* Total */}
+            <div className="flex items-center justify-between py-3 font-semibold">
+              <span>Total Amount</span>
+              <span className="text-lg text-primary">
+                ${registrationData.totalAmount}
+              </span>
             </div>
-            <span className="font-medium">
-              ${registrationData.no_of_children_3to8 * PRICES.kids38}
-            </span>
-          </div>
+          </>
+        ) : (
+          <div className="text-red-500">Invalid package selected</div>
         )}
-
-        {/* Total */}
-        <div className="flex items-center justify-between py-3 font-semibold">
-          <span>Total Amount</span>
-          <span className="text-lg text-primary">
-            ${registrationData.totalAmount}
-          </span>
-        </div>
       </div>
 
       {/* Bank Details */}
