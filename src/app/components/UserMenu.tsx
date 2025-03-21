@@ -10,11 +10,6 @@ import { LogOut, Settings, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface UserDetails {
-  name: string;
-  email: string;
-}
-
 export const UserMenu = () => {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(() => {
