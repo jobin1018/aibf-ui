@@ -13,6 +13,8 @@ import { Conference } from "./app/components/Conference.tsx";
 import { ContactForm } from "./app/components/ContactForm.tsx";
 import { DashboardPage } from "./app/dashboard/page";
 import RegisterPage from "./app/pages/register/page";
+import ProfilePage from "./app/pages/profile/page";
+import UpdateProfilePage from "./app/pages/update-profile/page"; // Added import statement
 import { hasDashboardAccess } from "./utils/auth";
 import { LoginForm } from "./app/components/LoginForm.tsx";
 
@@ -56,6 +58,22 @@ const router = createBrowserRouter([
       {
         path: "conference",
         element: <Conference />,
+      },
+      {
+        path: "profile",
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "update-profile",
+        element: (
+          <ProtectedRoute>
+            <UpdateProfilePage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "register",

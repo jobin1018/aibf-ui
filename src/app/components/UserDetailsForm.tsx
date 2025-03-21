@@ -6,10 +6,12 @@ import { API_ENDPOINTS } from "@/constants/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import React from "react";
+import { toast } from "@/components/ui/use-toast";
 
 const userFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email format"),
+  email: z.string().min(1, "Email is required"),
   phone: z.string().min(1, "Phone number is required"),
   address: z.string().min(1, "Address is required"),
   city: z.string().min(1, "City is required"),
@@ -20,48 +22,109 @@ type UserFormData = z.infer<typeof userFormSchema>;
 
 interface UserDetailsFormProps {
   email: string;
+  name: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
   token: string;
   onSuccess: () => void;
+  isUpdate?: boolean;
+  userId?: number;
 }
 
 export default function UserDetailsForm({
   email,
+  name,
+  phone = "",
+  address = "",
+  city = "",
+  state = "",
   token,
   onSuccess,
+  isUpdate = false,
+  userId,
 }: UserDetailsFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setValue,
+    formState: { errors, isSubmitting },
   } = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
-      email,
-      name: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
+      name,
+      phone,
+      address,
+      city,
+      state,
     },
   });
 
+  // Ensure email is always set in the form
+  React.useEffect(() => {
+    setValue("email", email);
+  }, [email, setValue]);
+
   const onSubmit = async (data: UserFormData) => {
-    if (!email || !token) {
+    if (!token) {
       alert("Missing authentication details. Please log in again.");
       return;
     }
 
     try {
-      await axios.post(API_ENDPOINTS.COMPLETE_PROFILE, {
-        ...data,
-        token,
-      });
+      if (isUpdate && userId) {
+        // Update existing profile
+        await axios.patch(
+          `${API_ENDPOINTS.USERS}${userId}/`,
+          { ...data },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      // Store user details
-      localStorage.setItem("user_details", JSON.stringify(data));
+        // For update, keep the existing ID from local storage
+        const existingDetails = JSON.parse(
+          localStorage.getItem("user_details") || "{}"
+        );
+        localStorage.setItem(
+          "user_details",
+          JSON.stringify({
+            ...data,
+            id: existingDetails.id,
+            picture: existingDetails.picture,
+          })
+        );
+      } else {
+        // Create new profile
+        const response = await axios.post(API_ENDPOINTS.COMPLETE_PROFILE, {
+          ...data,
+          token,
+        });
+
+        // Store user details with ID from response
+        localStorage.setItem(
+          "user_details",
+          JSON.stringify({
+            ...data,
+            id: response.data.id,
+            picture: response.data.picture || "",
+          })
+        );
+      }
+
       onSuccess();
     } catch (error) {
-      console.error("Profile completion error:", error);
+      console.error("Profile error:", error);
+      toast({
+        title: "Error",
+        description: isUpdate
+          ? "Failed to update profile"
+          : "Failed to create profile",
+        variant: "destructive",
+      });
     }
   };
 
@@ -76,10 +139,13 @@ export default function UserDetailsForm({
       </div>
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" {...register("email")} disabled />
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email.message}</p>
-        )}
+        <Input
+          id="email"
+          {...register("email")}
+          readOnly
+          disabled
+          className="opacity-50"
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="phone">Phone Number</Label>
@@ -113,8 +179,8 @@ export default function UserDetailsForm({
           <p className="text-sm text-red-500">{errors.state.message}</p>
         )}
       </div>
-      <Button type="submit" className="w-full">
-        Complete Profile
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isUpdate ? "Update Profile" : "Complete Profile"}
       </Button>
     </form>
   );

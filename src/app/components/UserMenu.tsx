@@ -6,10 +6,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+interface UserDetails {
+  name: string;
+  email: string;
+}
 
 export const UserMenu = () => {
+  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(() => {
     const userDetailsStr = localStorage.getItem("user_details");
     return userDetailsStr ? JSON.parse(userDetailsStr) : null;
@@ -47,7 +54,11 @@ export const UserMenu = () => {
     localStorage.removeItem("user_details");
     // Dispatch custom event for header update
     window.dispatchEvent(new Event("userStateChange"));
-    window.location.href = "/login";
+    navigate("/login");
+  };
+
+  const handleUpdateProfile = () => {
+    navigate("/update-profile");
   };
 
   if (!userDetails) {
@@ -107,6 +118,17 @@ export const UserMenu = () => {
         </div>
 
         <DropdownMenuSeparator className="my-1.5 bg-border/50" />
+
+        <DropdownMenuItem
+          className="text-primary cursor-pointer text-xs sm:text-sm px-2.5 py-2
+          hover:bg-primary/10 dark:hover:bg-primary/20 
+          rounded-md transition-colors duration-200 
+          flex items-center"
+          onSelect={handleUpdateProfile}
+        >
+          <Settings className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          Update Profile
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           className="text-red-600 dark:text-red-400 

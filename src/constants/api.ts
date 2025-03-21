@@ -7,4 +7,5 @@ export const API_ENDPOINTS = {
   CONTACT: `${API_ROOT_URL}/api/contact/`,
   EVENTS: `${API_ROOT_URL}/users/events/`,
   REGISTRATION: `${API_ROOT_URL}/users/registrations/`,
+  USERS: `${API_ROOT_URL}/users/users/`,
 } as const;

@@ -14,14 +14,6 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import UserDetailsForm from "@/app/components/UserDetailsForm"; // Import UserDetailsForm
 import { toast } from "@/components/ui/use-toast";
 
 interface GoogleJwtPayload extends JwtPayload {
@@ -34,9 +26,6 @@ interface GoogleJwtPayload extends JwtPayload {
 
 export function LoginForm() {
   const navigate = useNavigate();
-  const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
-  const [newUserEmail, setNewUserEmail] = useState("");
-  const [newUserToken, setNewUserToken] = useState("");
 
   const GOOGLE_CLIENT_ID =
     import.meta.env.VITE_GOOGLE_CLIENT_ID ||
@@ -85,6 +74,7 @@ export function LoginForm() {
 
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
+      localStorage.setItem("google_token", credentialResponse.credential);
 
       // Decode the Google JWT to get user details
       const decoded = jwtDecode(credentialResponse.credential);
@@ -106,13 +96,13 @@ export function LoginForm() {
       };
       localStorage.setItem("user_details", JSON.stringify(userDetails));
 
-      console.log("data.user.new_user", data.user.new_user);
       if (data.user.new_user) {
-        // Open modal for new users to complete profile
-        setNewUserEmail(googleJwtPayload.email);
-        setNewUserToken(credentialResponse.credential);
-        setIsUserDetailsModalOpen(true);
-        console.log("usedetailsmodal", isUserDetailsModalOpen);
+        // Redirect new users to profile completion page
+        navigate("/profile");
+        toast({
+          title: "Welcome!",
+          description: "Please complete your profile to continue.",
+        });
       } else {
         // Redirect to conference page for existing users
         navigate("/conference");
@@ -130,86 +120,31 @@ export function LoginForm() {
     }
   };
 
-  const handleProfileComplete = () => {
-    toast({
-      title: "User Created",
-      description: "Profile Completed Successfully",
-    });
-    setIsUserDetailsModalOpen(false);
-    navigate("/conference");
-  };
-
   return (
-    <>
-      <Card className="w-full max-w-md mx-auto mt-20 shadow-lg">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-2xl text-center text-black dark:text-white font-bold">
-            Login
-          </CardTitle>
-          <CardDescription className="text-center text-gray-900 dark:text-gray-200">
-            Sign in with your Google account
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex justify-center pt-4 pb-6">
-          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-            <GoogleLogin
-              onSuccess={handleLoginSuccess}
-              onError={handleError as any}
-              useOneTap
-              auto_select
-              type="standard"
-              theme="filled_blue"
-              size="large"
-              text="signin_with"
-              shape="rectangular"
-            />
-          </GoogleOAuthProvider>
-        </CardContent>
-      </Card>
-
-      <Dialog
-        open={isUserDetailsModalOpen}
-        onOpenChange={() => {
-          // Do nothing to prevent closing
-          toast({
-            title: "Profile Completion Required",
-            description: "You must complete your profile to continue.",
-            variant: "destructive",
-          });
-        }}
-      >
-        <DialogContent
-          // Additional prevention of closing
-          onEscapeKeyDown={(e) => {
-            e.preventDefault();
-            toast({
-              title: "Profile Completion Required",
-              description: "You must complete your profile to continue.",
-              variant: "destructive",
-            });
-          }}
-          onPointerDownOutside={(e) => {
-            e.preventDefault();
-            toast({
-              title: "Profile Completion Required",
-              description: "You must complete your profile to continue.",
-              variant: "destructive",
-            });
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle>Complete Your Profile</DialogTitle>
-            <p className="text-sm text-muted-foreground">
-              You must complete your profile to access the application
-            </p>
-          </DialogHeader>
-          <UserDetailsForm
-            email={newUserEmail}
-            token={newUserToken}
-            onSuccess={handleProfileComplete}
+    <Card className="w-full max-w-md mx-auto mt-20 shadow-lg">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-2xl text-center text-black dark:text-white font-bold">
+          Login
+        </CardTitle>
+        <CardDescription className="text-center text-gray-900 dark:text-gray-200">
+          Sign in with your Google account
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex justify-center pt-4 pb-6">
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+          <GoogleLogin
+            onSuccess={handleLoginSuccess}
+            onError={handleError as any}
+            useOneTap
+            auto_select
+            type="standard"
+            theme="filled_blue"
+            size="large"
+            text="signin_with"
+            shape="rectangular"
           />
-        </DialogContent>
-      </Dialog>
-    </>
+        </GoogleOAuthProvider>
+      </CardContent>
+    </Card>
   );
 }
