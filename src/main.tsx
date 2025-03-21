@@ -14,6 +14,7 @@ import { ContactForm } from "./app/components/ContactForm.tsx";
 import { DashboardPage } from "./app/dashboard/page";
 import RegisterPage from "./app/pages/register/page";
 import { hasDashboardAccess } from "./utils/auth";
+import { LoginForm } from "./app/components/LoginForm.tsx";
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -50,15 +51,11 @@ const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Conference />,
+        element: <LoginForm />,
       },
       {
         path: "conference",
-        element: (
-          <ProtectedRoute>
-            <Conference />
-          </ProtectedRoute>
-        ),
+        element: <Conference />,
       },
       {
         path: "register",

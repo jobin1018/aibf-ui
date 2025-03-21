@@ -39,6 +39,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
   const [loading, setLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
   const [daysToEvent, setDaysToEvent] = useState<number | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const fetchLatestEvent = async () => {
     try {
@@ -71,6 +72,20 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const hasAccess = localStorage.getItem("access") !== null;
+      setIsLoggedIn(hasAccess);
+    };
+
+    checkLoginStatus();
+    window.addEventListener("storage", checkLoginStatus);
+    
+    return () => {
+      window.removeEventListener("storage", checkLoginStatus);
+    };
+  }, []);
 
   useEffect(() => {
     fetchLatestEvent();
@@ -196,9 +211,11 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12 items-start">
           {/* Event Poster with Modern Styling */}
           <div className="relative group max-w-md mx-auto lg:max-w-none w-full">
-            <div className="aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden 
+            <div
+              className="aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden 
               shadow-lg sm:shadow-2xl transition-all duration-300 
-              group-hover:shadow-xl group-hover:scale-[1.02]">
+              group-hover:shadow-xl group-hover:scale-[1.02]"
+            >
               <img
                 src={event.poster_url || aibf_25_2_poster}
                 alt={`${event.name}`}
@@ -208,10 +225,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               />
             </div>
             {daysToEvent !== null && (
-              <div className="absolute top-2 sm:top-4 right-2 sm:right-4 
+              <div
+                className="absolute top-2 sm:top-4 right-2 sm:right-4 
                 bg-primary/90 text-primary-foreground 
                 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold
-                shadow-lg">
+                shadow-lg"
+              >
                 {daysToEvent} {daysToEvent === 1 ? "day" : "days"} to go
               </div>
             )}
@@ -220,11 +239,13 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
           {/* Event Details with Modern Typography and Layout */}
           <div className="space-y-6 sm:space-y-8">
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight 
+              <h1
+                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight 
                 bg-gradient-to-r from-foreground via-primary to-primary/70 
                 text-transparent bg-clip-text
                 dark:from-white dark:via-white dark:to-primary
-                mb-3 sm:mb-4">
+                mb-3 sm:mb-4"
+              >
                 {event.name}
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed">
@@ -270,7 +291,8 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                           </div>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Includes 3 nights accommodation & 9 meals (3*Breakfast included)
+                          Includes 3 nights accommodation & 9 meals (3*Breakfast
+                          included)
                         </p>
                       </div>
 
@@ -294,7 +316,8 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                           </div>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Includes 2 nights accommodation & 8 meals (2*Breakfast included)
+                          Includes 2 nights accommodation & 8 meals (2*Breakfast
+                          included)
                         </p>
                       </div>
 
@@ -318,7 +341,8 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                           </div>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Includes 1 night accommodation & 5 meals (1*Breakfast included)
+                          Includes 1 night accommodation & 5 meals (1*Breakfast
+                          included)
                         </p>
                       </div>
 
@@ -349,18 +373,39 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
 
                       {/* Additional Information */}
                       <div className="space-y-1 text-xs text-muted-foreground mt-3 sm:mt-4">
-                        <p>• Infants under 3 years <span className="text-green-600 font-medium">free</span> for whole camp</p>
+                        <p>
+                          • Infants under 3 years{" "}
+                          <span className="text-green-600 font-medium">
+                            free
+                          </span>{" "}
+                          for whole camp
+                        </p>
                         <p>• All prices include GST</p>
                         <div className="mt-2 space-y-1">
                           <p className="font-medium text-primary">
-                            • Check-in: <span className="text-foreground">Thursday 4:00 PM</span>
+                            • Check-in:{" "}
+                            <span className="text-foreground">
+                              Thursday 4:00 PM
+                            </span>
                           </p>
                           <p className="font-medium text-primary">
-                            • Check-out: <span className="text-foreground">Sunday 1:00 PM</span>
+                            • Check-out:{" "}
+                            <span className="text-foreground">
+                              Sunday 1:00 PM
+                            </span>
                           </p>
                         </div>
-                        <p>• Registration fees are <span className="text-green-600 font-medium">nil</span> this year</p>
-                        <p>• Members can donate funds to support AIBF camp expenses</p>
+                        <p>
+                          • Registration fees are{" "}
+                          <span className="text-green-600 font-medium">
+                            nil
+                          </span>{" "}
+                          this year
+                        </p>
+                        <p>
+                          • Members can donate funds to support AIBF camp
+                          expenses
+                        </p>
                       </div>
                     </div>
                   ),
@@ -371,11 +416,17 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                   className={`bg-card border rounded-lg sm:rounded-xl p-3 sm:p-4 
                   hover:shadow-md transition-all duration-300 
                   hover:border-primary/50 group
-                  ${item.title === "Fee Structure" ? "col-span-1 sm:col-span-2" : ""}`}
+                  ${
+                    item.title === "Fee Structure"
+                      ? "col-span-1 sm:col-span-2"
+                      : ""
+                  }`}
                 >
                   <div className="flex items-center space-x-3 sm:space-x-4">
-                    <div className="bg-primary/10 p-2 sm:p-3 rounded-full 
-                      group-hover:bg-primary/20 transition-colors">
+                    <div
+                      className="bg-primary/10 p-2 sm:p-3 rounded-full 
+                      group-hover:bg-primary/20 transition-colors"
+                    >
                       <item.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     </div>
                     <div className="flex-1">
@@ -392,11 +443,11 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
             </div>
 
             {/* Register Button */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="flex flex-col items-center gap-3">
               <Button
                 onClick={onRegisterClick}
                 className="w-full lg:w-2/3 h-9 sm:h-10 text-sm sm:text-base group"
-                disabled={isRegistered}
+                disabled={isRegistered || !isLoggedIn}
               >
                 {isRegistered ? (
                   <>
@@ -410,16 +461,32 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                   </>
                 )}
               </Button>
+              {!isLoggedIn && !isRegistered && (
+                <p className="text-sm text-muted-foreground">
+                  Please <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.href = "/login";
+                    }}
+                    className="text-primary hover:text-primary/80 transition-colors"
+                  >
+                    login
+                  </a> to register for the conference
+                </p>
+              )}
             </div>
 
             {/* Registration Success Message */}
             {isRegistered && (
-              <div className="mt-4 p-3 sm:p-4 
+              <div
+                className="mt-4 p-3 sm:p-4 
                 bg-gradient-to-r from-green-50 to-green-100 
                 border border-green-200 
                 rounded-lg sm:rounded-xl 
                 text-center 
-                shadow-md">
+                shadow-md"
+              >
                 <h2 className="text-lg sm:text-xl font-bold text-green-800 mb-2">
                   Thank you for your registration!
                 </h2>
