@@ -13,8 +13,14 @@ import { toast } from "@/components/ui/use-toast";
 import { API_ENDPOINTS } from "@/constants/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Check, X } from "lucide-react";
 import * as XLSX from "xlsx";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Define the type for user registration
 interface UserRegistration {
@@ -33,7 +39,7 @@ interface UserRegistration {
   additional_kids_9_13: string;
   additional_kids_3_8: string;
   registration_date: string;
-  payment_status: string;
+  payment_status: boolean;
 }
 
 export function DashboardPage() {
@@ -41,29 +47,29 @@ export function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchRegistrations = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(API_ENDPOINTS.REGISTRATION, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      });
+
+      setRegistrations(response.data);
+      setIsLoading(false);
+    } catch (err) {
+      setError("Failed to fetch registrations");
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "Unable to fetch registrations",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
-    const fetchRegistrations = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(API_ENDPOINTS.REGISTRATION, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access")}`,
-          },
-        });
-
-        setRegistrations(response.data);
-        setIsLoading(false);
-      } catch (err) {
-        setError("Failed to fetch registrations");
-        setIsLoading(false);
-        toast({
-          title: "Error",
-          description: "Unable to fetch registrations",
-          variant: "destructive",
-        });
-      }
-    };
-
     fetchRegistrations();
   }, []);
 
@@ -89,7 +95,7 @@ export function DashboardPage() {
               day: "numeric",
             })
           : "N/A",
-        "Payment Status": reg.payment_status,
+        "Payment Status": reg.payment_status ? "Paid" : "Pending",
       }));
 
       const ws = XLSX.utils.json_to_sheet(exportData);
@@ -105,6 +111,38 @@ export function DashboardPage() {
       toast({
         title: "Error",
         description: "Failed to export registration data",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePaymentStatusChange = async (registrationId: string, newStatus: boolean) => {
+    try {
+      await axios.patch(
+        `${API_ENDPOINTS.REGISTRATION}${registrationId}/`,
+        { payment_status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
+          },
+        }
+      );
+
+      // Update local state
+      setRegistrations(prevRegistrations =>
+        prevRegistrations.map(reg =>
+          reg.id === registrationId ? { ...reg, payment_status: newStatus } : reg
+        )
+      );
+
+      toast({
+        title: "Success",
+        description: "Payment status updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update payment status",
         variant: "destructive",
       });
     }
@@ -259,13 +297,37 @@ export function DashboardPage() {
                       : "N/A"}
                   </TableCell>
                   <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
-                    <Badge className="text-xs md:text-sm" variant={
-                      registration.payment_status === "paid"
-                        ? "success"
-                        : "destructive"
-                    }>
-                      {registration.payment_status}
-                    </Badge>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="h-8 w-full justify-start p-0 font-normal"
+                        >
+                          <Badge 
+                            className="text-xs md:text-sm cursor-pointer" 
+                            variant={registration.payment_status ? "success" : "destructive"}
+                          >
+                            {registration.payment_status ? "Paid" : "Pending"}
+                          </Badge>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => handlePaymentStatusChange(registration.id, true)}
+                          className="text-green-600"
+                        >
+                          <Check className="mr-2 h-4 w-4" />
+                          Mark as Paid
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handlePaymentStatusChange(registration.id, false)}
+                          className="text-red-600"
+                        >
+                          <X className="mr-2 h-4 w-4" />
+                          Mark as Pending
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
