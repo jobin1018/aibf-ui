@@ -90,6 +90,7 @@ export function LoginForm() {
 
       // Store user details
       const userDetails = {
+        id: data.user.id,
         name: googleJwtPayload.name,
         email: googleJwtPayload.email,
         picture: googleJwtPayload.picture,
