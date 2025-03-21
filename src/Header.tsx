@@ -11,6 +11,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { UserMenu } from "./app/components/UserMenu";
 import { Logo } from "./components/Logo";
+import { hasDashboardAccess } from "@/utils/auth";
+import { useEffect, useState } from "react";
 
 const routes = [
   {
@@ -24,6 +26,7 @@ const routes = [
   {
     href: "/dashboard",
     label: "Dashboard",
+    requiresAccess: true,
   },
   {
     href: "/contact",
@@ -32,6 +35,38 @@ const routes = [
 ];
 
 export const Header = () => {
+  const [hasAccess, setHasAccess] = useState(hasDashboardAccess());
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setHasAccess(hasDashboardAccess());
+    };
+
+    // Listen for storage events (for cross-window updates)
+    window.addEventListener("storage", handleStorageChange);
+
+    // Listen for custom events from login/logout
+    window.addEventListener("userStateChange", handleStorageChange);
+
+    // Check access periodically for changes
+    const interval = setInterval(() => {
+      const currentAccess = hasDashboardAccess();
+      if (currentAccess !== hasAccess) {
+        setHasAccess(currentAccess);
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("userStateChange", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [hasAccess]);
+
+  const filteredRoutes = routes.filter(
+    (route) => !route.requiresAccess || hasAccess
+  );
+
   return (
     <header className="border-b mb-2 sm:mb-5">
       <Container>
@@ -52,7 +87,7 @@ export const Header = () => {
             <div className="hidden md:flex">
               <NavigationMenu>
                 <NavigationMenuList className="gap-4">
-                  {routes.map((item, index) => (
+                  {filteredRoutes.map((item, index) => (
                     <NavigationMenuItem key={index}>
                       <NavigationMenuLink
                         href={item.href}
@@ -97,7 +132,7 @@ export const Header = () => {
 
                     {/* Navigation Links */}
                     <nav className="flex-grow space-y-2">
-                      {routes.map((item, index) => (
+                      {filteredRoutes.map((item, index) => (
                         <a
                           key={index}
                           href={item.href}

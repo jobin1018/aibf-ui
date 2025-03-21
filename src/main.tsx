@@ -13,6 +13,7 @@ import { Conference } from "./app/components/Conference.tsx";
 import { ContactForm } from "./app/components/ContactForm.tsx";
 import { DashboardPage } from "./app/dashboard/page";
 import RegisterPage from "./app/pages/register/page";
+import { hasDashboardAccess } from "./utils/auth";
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -23,6 +24,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return <>{children}</>;
+};
+
+// Dashboard route component with access control
+const DashboardRoute = () => {
+  if (!hasDashboardAccess()) {
+    return <Navigate to="/conference" />;
+  }
+  return <DashboardPage />;
 };
 
 const router = createBrowserRouter([
@@ -63,7 +72,7 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: (
           <ProtectedRoute>
-            <DashboardPage />
+            <DashboardRoute />
           </ProtectedRoute>
         ),
       },

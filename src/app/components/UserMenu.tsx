@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,35 +6,56 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, UserCog, UserCircle } from "lucide-react";
+import { LogOut, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export function UserMenu() {
-  const navigate = useNavigate();
-  const userDetailsStr = localStorage.getItem("user_details");
-  const isLoggedIn = localStorage.getItem("access") !== null;
+export const UserMenu = () => {
+  const [userDetails, setUserDetails] = useState(() => {
+    const userDetailsStr = localStorage.getItem("user_details");
+    return userDetailsStr ? JSON.parse(userDetailsStr) : null;
+  });
 
-  let userName = "";
-  let userEmail = "";
-  try {
-    if (userDetailsStr) {
-      const userDetails = JSON.parse(userDetailsStr);
-      userName = userDetails?.name || "User";
-      userEmail = userDetails?.email || "";
-    }
-  } catch (error) {
-    console.error("Error parsing user details:", error);
-    userName = "User";
-  }
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const userDetailsStr = localStorage.getItem("user_details");
+      setUserDetails(userDetailsStr ? JSON.parse(userDetailsStr) : null);
+    };
+
+    // Listen for storage events (for cross-window updates)
+    window.addEventListener("storage", handleStorageChange);
+
+    // Listen for custom events from login/logout
+    window.addEventListener("userStateChange", handleStorageChange);
+
+    // Check localStorage periodically for changes
+    const interval = setInterval(() => {
+      const currentUserDetails = localStorage.getItem("user_details");
+      if (currentUserDetails !== JSON.stringify(userDetails)) {
+        handleStorageChange();
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("userStateChange", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [userDetails]);
 
   const handleLogout = () => {
     localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
     localStorage.removeItem("user_details");
-    navigate("/");
+    // Dispatch custom event for header update
+    window.dispatchEvent(new Event("userStateChange"));
+    window.location.href = "/login";
   };
 
-  if (!isLoggedIn) {
-    return null;
+  if (!userDetails) {
+    return (
+      <Button variant="outline" asChild>
+        <a href="/login">Login</a>
+      </Button>
+    );
   }
 
   return (
@@ -43,63 +63,56 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="icon"
           className="relative h-10 w-10 rounded-full 
-          bg-primary/10 text-primary 
-          hover:bg-primary/20 
-          transition-all duration-300 
-          group"
+          bg-gradient-to-br from-primary/10 to-primary/5 
+          text-primary hover:from-primary/15 hover:to-primary/10 
+          transition-all duration-200 group"
         >
           <div
             className="absolute inset-0 rounded-full 
-            border-2 border-transparent 
-            group-hover:border-primary/30 
-            transition-all duration-300"
+            border border-primary/10 
+            group-hover:border-primary/20 
+            transition-colors duration-200"
           ></div>
-          <User className="h-5 w-5 relative z-10" />
+          <span className="text-lg font-semibold relative z-10">
+            {userDetails.name[0]}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="min-w-[250px] p-2 
-        bg-card border-none 
-        shadow-2xl rounded-xl 
-        dark:bg-card/80 backdrop-blur-lg"
+        bg-background/95 backdrop-blur-sm border border-border/50 
+        shadow-lg rounded-lg"
         align="end"
       >
         <div
           className="flex items-center space-x-3 p-3 
-          bg-primary/5 rounded-lg mb-2"
+          bg-gradient-to-br from-primary/5 to-transparent 
+          rounded-lg border border-primary/5"
         >
-          <div className="bg-primary/20 p-2 rounded-full">
-            <UserCircle className="h-6 w-6 text-primary" />
+          <div
+            className="bg-gradient-to-br from-primary/10 to-primary/5 
+            p-2 rounded-full border border-primary/10"
+          >
+            <User className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground">{userName}</p>
+            <p className="text-sm font-semibold text-foreground">
+              {userDetails.name}
+            </p>
             <p className="text-xs text-muted-foreground truncate max-w-[180px]">
-              {userEmail}
+              {userDetails.email}
             </p>
           </div>
         </div>
 
-        <DropdownMenuSeparator className="my-2 bg-primary/10" />
-
-        <DropdownMenuItem
-          className="cursor-pointer text-sm 
-          hover:bg-primary/10 rounded-md 
-          transition-colors duration-200 
-          flex items-center
-          opacity-50 cursor-not-allowed"
-          disabled
-        >
-          <UserCog className="mr-2 h-4 w-4 text-muted-foreground" />
-          Update Profile
-        </DropdownMenuItem>
+        <DropdownMenuSeparator className="my-2 bg-border/50" />
 
         <DropdownMenuItem
           className="text-red-600 dark:text-red-400 
           cursor-pointer text-sm 
-          hover:bg-red-50 rounded-md 
-          transition-colors duration-200 
+          hover:bg-red-50/50 dark:hover:bg-red-950/50 
+          rounded-md transition-colors duration-200 
           flex items-center"
           onSelect={handleLogout}
         >
@@ -109,4 +122,4 @@ export function UserMenu() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

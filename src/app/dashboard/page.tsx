@@ -15,6 +15,9 @@ import { Badge } from "@/components/ui/badge";
 
 // Define the type for user registration
 interface UserRegistration {
+  address: string;
+  city: string;
+  user_name: string;
   id: string;
   name: string;
   email: string;
@@ -71,13 +74,18 @@ export function DashboardPage() {
           <TableCaption>Loading registrations...</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>User Name</TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>State</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Additional Attendees (Adults)</TableHead>
-              <TableHead>Additional Attendees (Kids)</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Package</TableHead>
+              <TableHead>No. of Adults</TableHead>
+              <TableHead>Additional Adults</TableHead>
+              <TableHead>No. of Children (9-13)</TableHead>
+              <TableHead>No. of Children (3-8)</TableHead>
+              <TableHead>Additional Kids (9-13)</TableHead>
+              <TableHead>Additional Kids (3-8)</TableHead>
               <TableHead>Registration Date</TableHead>
               <TableHead>Payment Status</TableHead>
             </TableRow>
@@ -117,13 +125,18 @@ export function DashboardPage() {
           <TableCaption>No registrations found</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>User Name</TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>State</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Additional Attendees (Adults)</TableHead>
-              <TableHead>Additional Attendees (Kids)</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Package</TableHead>
+              <TableHead>No. of Adults</TableHead>
+              <TableHead>Additional Adults</TableHead>
+              <TableHead>No. of Children (9-13)</TableHead>
+              <TableHead>No. of Children (3-8)</TableHead>
+              <TableHead>Additional Kids (9-13)</TableHead>
+              <TableHead>Additional Kids (3-8)</TableHead>
               <TableHead>Registration Date</TableHead>
               <TableHead>Payment Status</TableHead>
             </TableRow>
@@ -151,6 +164,8 @@ export function DashboardPage() {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>Address</TableHead>
               <TableHead>Package</TableHead>
               <TableHead>No. of Adults</TableHead>
               <TableHead>Additional Adults</TableHead>
@@ -165,9 +180,11 @@ export function DashboardPage() {
           <TableBody>
             {registrations.map((registration) => (
               <TableRow key={registration.id}>
-                <TableCell>{registration.name}</TableCell>
+                <TableCell>{registration.user_name}</TableCell>
                 <TableCell>{registration.email}</TableCell>
                 <TableCell>{registration.phone}</TableCell>
+                <TableCell>{registration.city}</TableCell>
+                <TableCell>{registration.address}</TableCell>
                 <TableCell>{registration.selected_package}</TableCell>
                 <TableCell>{registration.no_of_adults}</TableCell>
                 <TableCell>{registration.additional_adults}</TableCell>
