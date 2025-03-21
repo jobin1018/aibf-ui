@@ -365,18 +365,22 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleRegistrationSubmit)}
-        className="space-y-6"
+        className="space-y-4 sm:space-y-6"
       >
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
+            <FormItem className="space-y-2 sm:space-y-3">
+              <FormLabel className="text-sm sm:text-base">Email</FormLabel>
               <FormControl>
-                <Input placeholder="your.email@example.com" {...field} />
+                <Input 
+                  placeholder="your.email@example.com" 
+                  className="h-9 sm:h-10 text-sm sm:text-base" 
+                  {...field} 
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs sm:text-sm" />
             </FormItem>
           )}
         />
@@ -385,15 +389,15 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
           control={form.control}
           name="package"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Select Package</FormLabel>
+            <FormItem className="space-y-2 sm:space-y-3">
+              <FormLabel className="text-sm sm:text-base">Select Package</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-9 sm:h-10 text-sm sm:text-base">
                     <SelectValue placeholder="Select a package" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-white dark:bg-gray-950 z-50">
+                <SelectContent className="bg-white dark:bg-gray-950 z-50 text-sm sm:text-base">
                   <SelectItem value="4-Day Package (Thu-Sun)">
                     4-Day Package (Thu-Sun)
                   </SelectItem>
@@ -406,24 +410,30 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
                   <SelectItem value="Day Visitors">Day Visitors</SelectItem>
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className="text-xs sm:text-sm" />
             </FormItem>
           )}
         />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Additional Attendees</h3>
-          <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-3 sm:space-y-4">
+          <h3 className="text-base sm:text-lg font-semibold">Additional Attendees</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <FormField
               control={form.control}
               name="adultsCount"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Additional Adults (excluding yourself)</FormLabel>
+                <FormItem className="space-y-2 sm:space-y-3">
+                  <FormLabel className="text-sm sm:text-base">Additional Adults (excluding yourself)</FormLabel>
                   <FormControl>
-                    <Input type="number" min="0" placeholder="0" {...field} />
+                    <Input 
+                      type="number" 
+                      min="0" 
+                      placeholder="0" 
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      {...field} 
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs sm:text-sm" />
                 </FormItem>
               )}
             />
@@ -432,12 +442,17 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
               control={form.control}
               name="kids9to13Count"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Kids (9-13)</FormLabel>
+                <FormItem className="space-y-2 sm:space-y-3">
+                  <FormLabel className="text-sm sm:text-base">Number of Kids (9-13)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
+                    <Input 
+                      type="number" 
+                      placeholder="0" 
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      {...field} 
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs sm:text-sm" />
                 </FormItem>
               )}
             />
@@ -446,12 +461,17 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
               control={form.control}
               name="kids3to8Count"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Kids (3-8)</FormLabel>
+                <FormItem className="space-y-2 sm:space-y-3">
+                  <FormLabel className="text-sm sm:text-base">Number of Kids (3-8)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
+                    <Input 
+                      type="number" 
+                      placeholder="0" 
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      {...field} 
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs sm:text-sm" />
                 </FormItem>
               )}
             />
@@ -460,74 +480,92 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
 
         {additionalAdultsFields.length > 0 && (
           <>
-            <Separator className="my-4" />
-            <h3 className="text-lg font-semibold">Adults</h3>
-            {additionalAdultsFields.map((field, index) => (
-              <FormField
-                key={field.id}
-                control={form.control}
-                name={`additionalAdults.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Adult Name ({index + 1})</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Full name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ))}
+            <Separator className="my-3 sm:my-4" />
+            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Adults</h3>
+            <div className="space-y-3 sm:space-y-4">
+              {additionalAdultsFields.map((field, index) => (
+                <FormField
+                  key={field.id}
+                  control={form.control}
+                  name={`additionalAdults.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem className="space-y-2 sm:space-y-3">
+                      <FormLabel className="text-sm sm:text-base">Adult Name ({index + 1})</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Full name" 
+                          className="h-9 sm:h-10 text-sm sm:text-base"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs sm:text-sm" />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
           </>
         )}
 
         {additionalKids9to13Fields.length > 0 && (
           <>
-            <Separator className="my-4" />
-            <h3 className="text-lg font-semibold">Kids (9-13)</h3>
-            {additionalKids9to13Fields.map((field, index) => (
-              <FormField
-                key={field.id}
-                control={form.control}
-                name={`additionalKids9to13.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Kid Name ({index + 1})</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Full name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ))}
+            <Separator className="my-3 sm:my-4" />
+            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Kids (9-13)</h3>
+            <div className="space-y-3 sm:space-y-4">
+              {additionalKids9to13Fields.map((field, index) => (
+                <FormField
+                  key={field.id}
+                  control={form.control}
+                  name={`additionalKids9to13.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem className="space-y-2 sm:space-y-3">
+                      <FormLabel className="text-sm sm:text-base">Kid Name ({index + 1})</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Full name" 
+                          className="h-9 sm:h-10 text-sm sm:text-base"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs sm:text-sm" />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
           </>
         )}
 
         {additionalKids3to8Fields.length > 0 && (
           <>
-            <Separator className="my-4" />
-            <h3 className="text-lg font-semibold">Kids (3-8)</h3>
-            {additionalKids3to8Fields.map((field, index) => (
-              <FormField
-                key={field.id}
-                control={form.control}
-                name={`additionalKids3to8.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Kid Name ({index + 1})</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Full name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ))}
+            <Separator className="my-3 sm:my-4" />
+            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Kids (3-8)</h3>
+            <div className="space-y-3 sm:space-y-4">
+              {additionalKids3to8Fields.map((field, index) => (
+                <FormField
+                  key={field.id}
+                  control={form.control}
+                  name={`additionalKids3to8.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem className="space-y-2 sm:space-y-3">
+                      <FormLabel className="text-sm sm:text-base">Kid Name ({index + 1})</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Full name" 
+                          className="h-9 sm:h-10 text-sm sm:text-base"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs sm:text-sm" />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
           </>
         )}
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full h-9 sm:h-10 text-sm sm:text-base mt-4 sm:mt-6">
           Continue to Payment
         </Button>
       </form>
@@ -615,141 +653,86 @@ export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
   };
 
   if (!registrationData) {
-    return <div>Please complete registration first</div>;
+    return (
+      <div className="text-center py-4 sm:py-6">
+        <p className="text-sm sm:text-base text-muted-foreground">No registration data found.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-3 sm:space-y-4">
+        <h3 className="text-base sm:text-lg font-semibold">Registration Summary</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm sm:text-base">
+          <div>
+            <p className="text-muted-foreground">Email:</p>
+            <p className="font-medium">{registrationData.email}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Package:</p>
+            <p className="font-medium">{registrationData.selected_package}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Total Adults:</p>
+            <p className="font-medium">{registrationData.no_of_adults}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Kids (9-13):</p>
+            <p className="font-medium">{registrationData.no_of_children_9_13}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Kids (3-8):</p>
+            <p className="font-medium">{registrationData.no_of_children_3_8}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Total Amount:</p>
+            <p className="font-medium">${registrationData.totalAmount}</p>
+          </div>
+        </div>
+      </div>
+
+      <Separator className="my-3 sm:my-4" />
+
+      <div className="space-y-3 sm:space-y-4">
+        <h3 className="text-base sm:text-lg font-semibold">Bank Details</h3>
+        <div className="space-y-2 sm:space-y-3 text-sm sm:text-base">
+          <div>
+            <p className="text-muted-foreground">Account Name:</p>
+            <p className="font-medium">{bankDetails.accountName}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Bank Name:</p>
+            <p className="font-medium">{bankDetails.bankName}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Account Number:</p>
+            <p className="font-medium">{bankDetails.accountNumber}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3 sm:space-y-4 pt-2 sm:pt-3">
+        <h4 className="text-sm sm:text-base font-medium text-muted-foreground">Important Notes:</h4>
+        <ul className="list-disc list-inside space-y-1 sm:space-y-2 text-sm sm:text-base text-muted-foreground">
+          <li>Please include your email in the payment reference</li>
+          <li>Send your payment receipt to registration@aibf.org</li>
+          <li>Your registration will be confirmed after payment verification</li>
+        </ul>
+      </div>
+
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-800">{error}</p>
+        <div className="text-sm sm:text-base text-red-500 mt-2 sm:mt-3">
+          Error: {error}
         </div>
       )}
 
-      {/* Price Breakdown */}
-      <div className="space-y-3">
-        <div className="text-lg font-semibold mb-4">
-          Selected Package: {registrationData.selected_package}
-        </div>
-
-        {registrationData.selected_package &&
-        PRICES[registrationData.selected_package as keyof typeof PRICES] ? (
-          <>
-            {/* Adults */}
-            <div className="flex items-center justify-between py-2 border-b">
-              <div>
-                <p className="font-medium">Adults</p>
-                <p className="text-sm text-gray-500">
-                  {registrationData.no_of_adults} × $
-                  {
-                    PRICES[
-                      registrationData.selected_package as keyof typeof PRICES
-                    ].adult
-                  }
-                </p>
-              </div>
-              <span className="font-medium">
-                $
-                {registrationData.no_of_adults *
-                  PRICES[
-                    registrationData.selected_package as keyof typeof PRICES
-                  ].adult}
-              </span>
-            </div>
-
-            {/* Kids 9-13 */}
-            {registrationData.no_of_children_9_13 > 0 && (
-              <div className="flex items-center justify-between py-2 border-b">
-                <div>
-                  <p className="font-medium">Kids (9-13)</p>
-                  <p className="text-sm text-gray-500">
-                    {registrationData.no_of_children_9_13} × $
-                    {
-                      PRICES[
-                        registrationData.selected_package as keyof typeof PRICES
-                      ].kids913
-                    }
-                  </p>
-                </div>
-                <span className="font-medium">
-                  $
-                  {registrationData.no_of_children_9_13 *
-                    PRICES[
-                      registrationData.selected_package as keyof typeof PRICES
-                    ].kids913}
-                </span>
-              </div>
-            )}
-
-            {/* Kids 3-8 */}
-            {registrationData.no_of_children_3_8 > 0 && (
-              <div className="flex items-center justify-between py-2 border-b">
-                <div>
-                  <p className="font-medium">Kids (3-8)</p>
-                  <p className="text-sm text-gray-500">
-                    {registrationData.no_of_children_3_8} × $
-                    {
-                      PRICES[
-                        registrationData.selected_package as keyof typeof PRICES
-                      ].kids38
-                    }
-                  </p>
-                </div>
-                <span className="font-medium">
-                  $
-                  {registrationData.no_of_children_3_8 *
-                    PRICES[
-                      registrationData.selected_package as keyof typeof PRICES
-                    ].kids38}
-                </span>
-              </div>
-            )}
-
-            {/* Total */}
-            <div className="flex items-center justify-between py-3 font-semibold">
-              <span>Total Amount</span>
-              <span className="text-lg text-primary">
-                ${registrationData.totalAmount}
-              </span>
-            </div>
-          </>
-        ) : (
-          <div className="text-red-500">Invalid package selected</div>
-        )}
-      </div>
-
-      {/* Bank Details */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-        <div className="mb-4 p-3 bg-blue-100 border border-blue-200 rounded-md">
-          <p className="text-blue-800 font-medium">
-            Please transfer the total amount to this AIBF bank account to
-            complete the registration.
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex justify-between">
-            <span className="text-gray-600">Account Name</span>
-            <span className="font-medium">{bankDetails.accountName}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Bank</span>
-            <span className="font-medium">{bankDetails.bankName}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Account Number</span>
-            <span className="font-medium">{bankDetails.accountNumber}</span>
-          </div>
-        </div>
-      </div>
-
       <Button
-        type="button"
-        className="w-full"
         onClick={handleCompleteRegistration}
+        className="w-full h-9 sm:h-10 text-sm sm:text-base mt-4 sm:mt-6"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Completing Registration..." : "Complete Registration"}
+        {isSubmitting ? "Processing..." : "Complete Registration"}
       </Button>
     </div>
   );

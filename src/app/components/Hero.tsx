@@ -60,11 +60,11 @@ export const Hero = () => {
           <div className="mt-8 sm:mt-10 flex items-center justify-start">
             <Button
               size="sm"
-              className="group w-auto px-3"
+              className="group w-auto px-2 sm:px-3 h-8 sm:h-10 text-xs sm:text-sm"
               onClick={() => navigate("/conference")}
             >
               Register Now
-              <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
         </div>

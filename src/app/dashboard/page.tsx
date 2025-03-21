@@ -165,113 +165,113 @@ export function DashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">AIBF 2025 - Registered Users</h1>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+        <h1 className="text-xl md:text-2xl font-bold">AIBF 2025 - Registered Users</h1>
         {registrations.length > 0 && (
-          <Button onClick={handleExport} variant="outline" size="sm">
-            <Download className="mr-2 h-4 w-4" />
-            Export to Excel
+          <Button onClick={handleExport} variant="outline" size="sm" className="w-full md:w-auto">
+            <Download className="md:mr-2 h-4 w-4" />
+            <span className="hidden md:inline">Export to Excel</span>
           </Button>
         )}
       </div>
       {registrations.length === 0 ? (
-        <Table>
-          <TableCaption>No registrations found</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Address</TableHead>
-              <TableHead>Package</TableHead>
-              <TableHead>No. of Adults</TableHead>
-              <TableHead>Additional Adults</TableHead>
-              <TableHead>No. of Children (9-13)</TableHead>
-              <TableHead>No. of Children (3-8)</TableHead>
-              <TableHead>Additional Kids (9-13)</TableHead>
-              <TableHead>Additional Kids (3-8)</TableHead>
-              <TableHead>Registration Date</TableHead>
-              <TableHead>Payment Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {[1, 2, 3, 4, 5].map((row) => (
-              <TableRow key={row}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((cell) => (
-                  <TableCell key={cell}>
-                    <div
-                      className="h-4 bg-gray-200 dark:bg-gray-700 
-                      rounded w-full animate-pulse"
-                    />
-                  </TableCell>
-                ))}
+        <div className="overflow-x-auto rounded-lg border">
+          <Table className="min-w-[800px] md:min-w-full">
+            <TableCaption>No registrations found</TableCaption>
+            <TableHeader className="bg-gray-50 dark:bg-gray-800">
+              <TableRow>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Name</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Email</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Phone</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">City</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Address</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Package</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Adults</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Adults</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (9-13)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (3-8)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (9-13)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (3-8)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Registration Date</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Payment Status</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {[1, 2, 3, 4, 5].map((row) => (
+                <TableRow key={row}>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((cell) => (
+                    <TableCell key={cell}>
+                      <div
+                        className="h-4 bg-gray-200 dark:bg-gray-700 
+                        rounded w-full animate-pulse"
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       ) : (
-        <Table>
-          <TableCaption>List of Registered Users</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Address</TableHead>
-              <TableHead>Package</TableHead>
-              <TableHead>No. of Adults</TableHead>
-              <TableHead>Additional Adults</TableHead>
-              <TableHead>No. of Children (9-13)</TableHead>
-              <TableHead>No. of Children (3-8)</TableHead>
-              <TableHead>Additional Kids (9-13)</TableHead>
-              <TableHead>Additional Kids (3-8)</TableHead>
-              <TableHead>Registration Date</TableHead>
-              <TableHead>Payment Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {registrations.map((registration) => (
-              <TableRow key={registration.id}>
-                <TableCell>{registration.user_name}</TableCell>
-                <TableCell>{registration.email}</TableCell>
-                <TableCell>{registration.phone}</TableCell>
-                <TableCell>{registration.city}</TableCell>
-                <TableCell>{registration.address}</TableCell>
-                <TableCell>{registration.selected_package}</TableCell>
-                <TableCell>{registration.no_of_adults}</TableCell>
-                <TableCell>{registration.additional_adults}</TableCell>
-                <TableCell>{registration.no_of_children_9_13}</TableCell>
-                <TableCell>{registration.no_of_children_3_8}</TableCell>
-                <TableCell>{registration.additional_kids_9_13}</TableCell>
-                <TableCell>{registration.additional_kids_3_8}</TableCell>
-                <TableCell>
-                  {registration.registration_date
-                    ? new Date(
-                        registration.registration_date
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : "N/A"}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
+        <div className="overflow-x-auto rounded-lg border">
+          <Table className="min-w-[800px] md:min-w-full">
+            <TableCaption>List of Registered Users</TableCaption>
+            <TableHeader className="bg-gray-50 dark:bg-gray-800">
+              <TableRow>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Name</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Email</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Phone</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">City</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Address</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Package</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Adults</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Adults</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (9-13)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (3-8)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (9-13)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (3-8)</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Registration Date</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Payment Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {registrations.map((registration) => (
+                <TableRow key={registration.id}>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.user_name}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.email}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.phone}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.city}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.address}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.selected_package}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.no_of_adults}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.additional_adults}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.no_of_children_9_13}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.no_of_children_3_8}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.additional_kids_9_13}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.additional_kids_3_8}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.registration_date
+                      ? new Date(registration.registration_date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: window.innerWidth < 768 ? "short" : "long",
+                          day: "numeric",
+                        })
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    <Badge className="text-xs md:text-sm" variant={
                       registration.payment_status === "paid"
                         ? "success"
                         : "destructive"
-                    }
-                  >
-                    {registration.payment_status}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                    }>
+                      {registration.payment_status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </div>
   );

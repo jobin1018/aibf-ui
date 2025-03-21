@@ -72,20 +72,20 @@ export function ContactForm() {
 
   return (
     <Container>
-      <Card className="w-full max-w-md mx-auto mt-20 shadow-lg">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-2xl text-center text-black dark:text-white font-bold">
+      <Card className="w-full max-w-md mx-auto mt-8 sm:mt-20 shadow-lg">
+        <CardHeader className="pb-3 sm:pb-4">
+          <CardTitle className="text-xl sm:text-2xl text-center text-black dark:text-white font-bold">
             Contact Us
           </CardTitle>
-          <CardDescription className="text-center text-gray-900 dark:text-gray-200">
+          <CardDescription className="text-sm sm:text-base text-center text-gray-900 dark:text-gray-200">
             Have questions? We'd love to hear from you. Send us a message.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+        <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="name" className="text-sm">Name</Label>
                 <Input
                   id="name"
                   name="name"
@@ -94,10 +94,11 @@ export function ContactForm() {
                   placeholder="Your name"
                   required
                   disabled={isSubmitting}
+                  className="h-9 sm:h-10 text-sm sm:text-base"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="email" className="text-sm">Email</Label>
                 <Input
                   id="email"
                   name="email"
@@ -107,11 +108,12 @@ export function ContactForm() {
                   placeholder="your.email@example.com"
                   required
                   disabled={isSubmitting}
+                  className="h-9 sm:h-10 text-sm sm:text-base"
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="subject">Subject</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="subject" className="text-sm">Subject</Label>
               <Input
                 id="subject"
                 name="subject"
@@ -120,24 +122,25 @@ export function ContactForm() {
                 placeholder="What is this regarding?"
                 required
                 disabled={isSubmitting}
+                className="h-9 sm:h-10 text-sm sm:text-base"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="message" className="text-sm">Message</Label>
               <Textarea
                 id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Your message here..."
-                className="min-h-[150px] resize-y"
+                className="min-h-[120px] sm:min-h-[150px] resize-y text-sm sm:text-base py-2"
                 required
                 disabled={isSubmitting}
               />
             </div>
             {submitStatus.message && (
               <div
-                className={`p-4 rounded-md ${
+                className={`p-3 sm:p-4 rounded-md text-sm sm:text-base ${
                   submitStatus.type === "success"
                     ? "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400"
                     : "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
@@ -146,10 +149,14 @@ export function ContactForm() {
                 {submitStatus.message}
               </div>
             )}
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button 
+              type="submit" 
+              className="w-full h-9 sm:h-10 text-sm sm:text-base" 
+              disabled={isSubmitting}
+            >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
                   Sending...
                 </>
               ) : (
