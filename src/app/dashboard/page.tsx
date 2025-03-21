@@ -12,6 +12,9 @@ import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { API_ENDPOINTS } from "@/constants/api";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import * as XLSX from "xlsx";
 
 // Define the type for user registration
 interface UserRegistration {
@@ -63,6 +66,49 @@ export function DashboardPage() {
 
     fetchRegistrations();
   }, []);
+
+  const handleExport = () => {
+    try {
+      const exportData = registrations.map((reg) => ({
+        Name: reg.user_name,
+        Email: reg.email,
+        Phone: reg.phone,
+        City: reg.city,
+        Address: reg.address,
+        Package: reg.selected_package,
+        "No. of Adults": reg.no_of_adults,
+        "Additional Adults": reg.additional_adults,
+        "No. of Children (9-13)": reg.no_of_children_9_13,
+        "No. of Children (3-8)": reg.no_of_children_3_8,
+        "Additional Kids (9-13)": reg.additional_kids_9_13,
+        "Additional Kids (3-8)": reg.additional_kids_3_8,
+        "Registration Date": reg.registration_date
+          ? new Date(reg.registration_date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : "N/A",
+        "Payment Status": reg.payment_status,
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Registrations");
+      XLSX.writeFile(wb, "aibf-registrations_2025.xlsx");
+
+      toast({
+        title: "Success",
+        description: "Registration data exported successfully",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to export registration data",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -119,7 +165,15 @@ export function DashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">AIBF 2025 - Registered Users</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">AIBF 2025 - Registered Users</h1>
+        {registrations.length > 0 && (
+          <Button onClick={handleExport} variant="outline" size="sm">
+            <Download className="mr-2 h-4 w-4" />
+            Export to Excel
+          </Button>
+        )}
+      </div>
       {registrations.length === 0 ? (
         <Table>
           <TableCaption>No registrations found</TableCaption>
