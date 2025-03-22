@@ -186,69 +186,85 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
   }, []);
 
   useEffect(() => {
-    const adultsCount = parseInt(form.getValues("adultsCount") || "0", 10);
-    const currentAdultsLength = additionalAdultsFields.length;
+    const adultsCount = parseInt(form.watch("adultsCount") || "0", 10);
+    const currentFields = additionalAdultsFields || [];
 
-    if (adultsCount > 0) {
-      // If we need more fields
-      if (currentAdultsLength < adultsCount) {
-        const fieldsToAdd = adultsCount - currentAdultsLength;
-        for (let i = 0; i < fieldsToAdd; i++) {
-          appendAdult({ name: "" });
-        }
-      }
-      // If we need fewer fields
-      else if (currentAdultsLength > adultsCount) {
-        const fieldsToRemove = currentAdultsLength - adultsCount;
-        for (let i = 0; i < fieldsToRemove; i++) {
-          removeAdult(currentAdultsLength - 1 - i);
-        }
-      }
-    } else {
+    if (adultsCount === 0) {
       // If count is 0, remove all fields
-      const fieldsToRemove = currentAdultsLength;
-      for (let i = 0; i < fieldsToRemove; i++) {
-        removeAdult(currentAdultsLength - 1 - i);
+      for (let i = currentFields.length - 1; i >= 0; i--) {
+        removeAdult(i);
+      }
+    } else if (adultsCount > currentFields.length) {
+      // Add fields if needed
+      for (let i = currentFields.length; i < adultsCount; i++) {
+        appendAdult({ name: "" });
+      }
+    } else if (adultsCount < currentFields.length) {
+      // Remove excess fields
+      for (let i = currentFields.length - 1; i >= adultsCount; i--) {
+        removeAdult(i);
       }
     }
-  }, [form.watch("adultsCount"), appendAdult, removeAdult]);
+  }, [
+    form.watch("adultsCount"),
+    removeAdult,
+    appendAdult,
+    additionalAdultsFields,
+  ]);
 
   useEffect(() => {
-    const kids9to13Count = parseInt(
-      form.getValues("kids9to13Count") || "0",
-      10
-    );
-    const currentKids9to13Length = additionalKids9to13Fields.length;
+    const kids9to13Count = parseInt(form.watch("kids9to13Count") || "0", 10);
+    const currentFields = additionalKids9to13Fields || [];
 
-    if (currentKids9to13Length < kids9to13Count) {
-      // Add more kid fields
-      for (let i = currentKids9to13Length; i < kids9to13Count; i++) {
+    if (kids9to13Count === 0) {
+      // If count is 0, remove all fields
+      for (let i = currentFields.length - 1; i >= 0; i--) {
+        removeKid9to13(i);
+      }
+    } else if (kids9to13Count > currentFields.length) {
+      // Add fields if needed
+      for (let i = currentFields.length; i < kids9to13Count; i++) {
         appendKid9to13({ name: "" });
       }
-    } else if (currentKids9to13Length > kids9to13Count) {
-      // Remove excess kid fields
-      for (let i = currentKids9to13Length; i > kids9to13Count; i--) {
-        removeKid9to13(i - 1);
+    } else if (kids9to13Count < currentFields.length) {
+      // Remove excess fields
+      for (let i = currentFields.length - 1; i >= kids9to13Count; i--) {
+        removeKid9to13(i);
       }
     }
-  }, [form.watch("kids9to13Count")]);
+  }, [
+    form.watch("kids9to13Count"),
+    removeKid9to13,
+    appendKid9to13,
+    additionalKids9to13Fields,
+  ]);
 
   useEffect(() => {
-    const kids3to8Count = parseInt(form.getValues("kids3to8Count") || "0", 10);
-    const currentKids3to8Length = additionalKids3to8Fields.length;
+    const kids3to8Count = parseInt(form.watch("kids3to8Count") || "0", 10);
+    const currentFields = additionalKids3to8Fields || [];
 
-    if (currentKids3to8Length < kids3to8Count) {
-      // Add more kid fields
-      for (let i = currentKids3to8Length; i < kids3to8Count; i++) {
+    if (kids3to8Count === 0) {
+      // If count is 0, remove all fields
+      for (let i = currentFields.length - 1; i >= 0; i--) {
+        removeKid3to8(i);
+      }
+    } else if (kids3to8Count > currentFields.length) {
+      // Add fields if needed
+      for (let i = currentFields.length; i < kids3to8Count; i++) {
         appendKid3to8({ name: "" });
       }
-    } else if (currentKids3to8Length > kids3to8Count) {
-      // Remove excess kid fields
-      for (let i = currentKids3to8Length; i > kids3to8Count; i--) {
-        removeKid3to8(i - 1);
+    } else if (kids3to8Count < currentFields.length) {
+      // Remove excess fields
+      for (let i = currentFields.length - 1; i >= kids3to8Count; i--) {
+        removeKid3to8(i);
       }
     }
-  }, [form.watch("kids3to8Count")]);
+  }, [
+    form.watch("kids3to8Count"),
+    removeKid3to8,
+    appendKid3to8,
+    additionalKids3to8Fields,
+  ]);
 
   useEffect(() => {
     // Get user details from localStorage
@@ -344,9 +360,14 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         event_id: eventId,
         email: values.email,
         selected_package: values.package,
-        no_of_adults: (values.adultsCount ? parseInt(values.adultsCount) : 0) + 1, // Add 1 for the registering person
-        no_of_children_9_13: values.kids9to13Count ? parseInt(values.kids9to13Count) : 0,
-        no_of_children_3_8: values.kids3to8Count ? parseInt(values.kids3to8Count) : 0,
+        no_of_adults:
+          (values.adultsCount ? parseInt(values.adultsCount) : 0) + 1, // Add 1 for the registering person
+        no_of_children_9_13: values.kids9to13Count
+          ? parseInt(values.kids9to13Count)
+          : 0,
+        no_of_children_3_8: values.kids3to8Count
+          ? parseInt(values.kids3to8Count)
+          : 0,
         selected_meals: values.selectedMeals?.join(", ") || "",
         additional_adults:
           values.additionalAdults?.map((adult) => adult.name).join(", ") || "",
@@ -710,6 +731,7 @@ interface PaymentDetailsProps {
 
 export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
   const [registrationData, setRegistrationData] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const storedData = localStorage.getItem("registration_data");
@@ -721,6 +743,7 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
 
   const handlePaymentSubmit = async () => {
     try {
+      setIsSubmitting(true);
       const registrationData = JSON.parse(
         localStorage.getItem("registration_data") || ""
       );
@@ -750,11 +773,13 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
             : "Please try again or contact support.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   if (!registrationData) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   return (
@@ -814,8 +839,20 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
         </div>
       </div>
 
-      <Button type="button" onClick={handlePaymentSubmit} className="w-full">
-        Complete Registration
+      <Button
+        type="button"
+        onClick={handlePaymentSubmit}
+        className="w-full"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <div className="flex items-center justify-center">
+            <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
+            <span className="ml-2">Completing Registration...</span>
+          </div>
+        ) : (
+          "Complete Registration"
+        )}
       </Button>
     </div>
   );
