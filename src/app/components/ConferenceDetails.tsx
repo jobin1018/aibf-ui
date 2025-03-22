@@ -333,6 +333,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                           </div>
                           <p className="text-xs text-muted-foreground">
                             {pkg.description}
+                            {(pkg.name === "4-Day Package (Thu-Sun)" || 
+                              pkg.name === "3-Day Package (Fri-Sun)") && (
+                              <span className="text-xs text-green-600 block mt-1 italic">
+                                50% Discount Offer: Applied automatically on the total amount at checkout!
+                              </span>
+                            )}
                           </p>
                         </div>
                       ))}

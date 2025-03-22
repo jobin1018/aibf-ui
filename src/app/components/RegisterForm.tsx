@@ -737,6 +737,16 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
     const storedData = localStorage.getItem("registration_data");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
+
+      // Calculate discounted amount for 3-day and 4-day packages
+      if (parsedData.selected_package === "3-Day Package (Fri-Sun)" || parsedData.selected_package === "4-Day Package (Thu-Sun)") {
+        const originalAmount = parsedData.total_amount;
+        const discountedAmount = originalAmount * 0.5; // 50% discount
+        parsedData.discounted_amount = discountedAmount;
+        parsedData.discount_percentage = 50;
+        parsedData.original_amount = originalAmount;
+      }
+
       setRegistrationData(parsedData);
     }
   }, []);
@@ -747,6 +757,11 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
       const registrationData = JSON.parse(
         localStorage.getItem("registration_data") || ""
       );
+
+      // If it's a 3-day or 4-day package, use the discounted amount
+      if (registrationData.selected_package === "3-Day Package (Fri-Sun)" || registrationData.selected_package === "4-Day Package (Thu-Sun)") {
+        registrationData.total_amount = registrationData.total_amount * 0.5;
+      }
 
       // Create registration in backend
       const response = await axios.post(
@@ -782,6 +797,8 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
     return null;
   }
 
+  const isDiscountedPackage = registrationData.selected_package === "3-Day Package (Fri-Sun)" || registrationData.selected_package === "4-Day Package (Thu-Sun)";
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -805,11 +822,25 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
             </p>
           )}
           <div className="mt-4 p-4 bg-muted rounded-lg">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold">Total Amount:</span>
-              <span className="text-lg font-bold">
-                ${registrationData.total_amount.toFixed(2)}
-              </span>
+            <div className="flex flex-col space-y-2">
+              {isDiscountedPackage && (
+                <>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Original Amount:</span>
+                    <span className="line-through">${registrationData.original_amount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-green-600">
+                    <span>Discount (50%):</span>
+                    <span>-${(registrationData.original_amount - registrationData.discounted_amount).toFixed(2)}</span>
+                  </div>
+                </>
+              )}
+              <div className="flex justify-between items-center pt-2 border-t">
+                <span className="font-semibold">Final Amount:</span>
+                <span className="text-lg font-bold">
+                  ${(isDiscountedPackage ? registrationData.discounted_amount : registrationData.total_amount).toFixed(2)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -825,8 +856,8 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
           <div className="mt-4 p-4 bg-primary/5 rounded-lg">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                1. Please transfer the total amount ($
-                {registrationData.total_amount.toFixed(2)}) to the above
+                1. Please transfer the {isDiscountedPackage ? 'discounted ' : ''}amount ($
+                {(isDiscountedPackage ? registrationData.discounted_amount : registrationData.total_amount).toFixed(2)}) to the above
                 mentioned bank account and send the receipt to
                 aibfmelb@gmail.com
               </p>

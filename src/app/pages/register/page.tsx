@@ -50,8 +50,14 @@ const RegisterPage = () => {
                       {pkg.child3to8Price}
                     </p>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-2">
+                  <p className="text-xs sm:text-sm mt-2">
                     {pkg.description}
+                    {(pkg.name === "4-Day Package (Thu-Sun)" ||
+                      pkg.name === "3-Day Package (Fri-Sun)") && (
+                      <span className="text-xs text-green-600 block mt-1 italic">
+                        50% Discount Offer: Applied automatically on the total amount at checkout!
+                      </span>
+                    )}
                   </p>
                 </div>
               ))}
