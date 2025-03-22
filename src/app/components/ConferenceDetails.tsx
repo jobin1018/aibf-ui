@@ -342,23 +342,29 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                         <p className="font-semibold mb-2">Please Note:</p>
                         <p>• All prices include GST.</p>
                         <p>
-                          • Infants under 3 years{" "}
-                          <span className="font-medium">
-                            free
-                          </span>{" "}
-                          for whole camp.
+                          • The camp is{" "}
+                          <span className="font-medium">free</span> for infants
+                          under 3 years.
                         </p>
                         <p>
-                          • <span className="font-medium">No registration fees</span> are required for interstate
-                          guests.
+                          •{" "}
+                          <span className="font-medium">
+                            No registration fees
+                          </span>{" "}
+                          are required for interstate guests.
                         </p>
                         <p>
                           • Families from Victoria are required to pay a
-                          <span className="font-medium"> registration fee of $100</span>.
+                          <span className="font-medium">
+                            {" "}
+                            registration fee of $100
+                          </span>
+                          .
                         </p>
                         <p>
-                          • A <span className="font-medium">50% discount</span> applies to accommodation and food
-                          expenses for Package 1 and Package 2.
+                          • A <span className="font-medium">50% discount</span>{" "}
+                          applies to accommodation and food expenses for Package
+                          1 and Package 2.
                         </p>
                       </div>
                     </div>
