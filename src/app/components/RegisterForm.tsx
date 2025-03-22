@@ -362,7 +362,6 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
 
     try {
       const totalFee = calculateTotalFee(values);
-      console.log("values", values);
       const registrationData = {
         event_id: eventId,
         email: values.email,
@@ -383,11 +382,26 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         additional_kids_3_8:
           values.additionalKids3to8?.map((kid) => kid.name).join(", ") || "",
         total_amount: totalFee,
-        total_fee:
+        original_amount: totalFee,
+        discounted_amount:
           values.package === "4-Day Package (Thu-Sun)" ||
           values.package === "3-Day Package (Fri-Sun)"
-            ? totalFee * 0.5 // Apply 50% discount for 3-day and 4-day packages
-            : totalFee, // No discount for other packages
+            ? totalFee * 0.5
+            : totalFee,
+        total_fee: (() => {
+          const userDetails = JSON.parse(
+            localStorage.getItem("user_details") || "{}"
+          );
+          const userState = (userDetails?.state || "").toLowerCase();
+          const regFee =
+            userState === "victoria" || userState === "vic" ? 100 : 0;
+          const baseAmount =
+            values.package === "4-Day Package (Thu-Sun)" ||
+            values.package === "3-Day Package (Fri-Sun)"
+              ? totalFee * 0.5 // Apply 50% discount for 3-day and 4-day packages
+              : totalFee; // No discount for other packages
+          return baseAmount + regFee;
+        })(),
       };
 
       // Store registration data in localStorage for payment step
@@ -904,14 +918,36 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
                   </div>
                 </>
               )}
+              {(() => {
+                const userDetails = JSON.parse(
+                  localStorage.getItem("user_details") || "{}"
+                );
+                const userState = (userDetails?.state || "").toLowerCase();
+                const regFee =
+                  userState === "victoria" || userState === "vic" ? 100 : 0;
+                return (
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Registration Fee:</span>
+                    <span>${regFee.toFixed(2)}</span>
+                  </div>
+                );
+              })()}
               <div className="flex justify-between items-center pt-2 border-t">
                 <span className="font-semibold">Final Amount:</span>
                 <span className="text-lg font-bold">
                   $
-                  {(isDiscountedPackage
-                    ? registrationData.discounted_amount
-                    : registrationData.total_amount
-                  ).toFixed(2)}
+                  {(() => {
+                    const userDetails = JSON.parse(
+                      localStorage.getItem("user_details") || "{}"
+                    );
+                    const userState = (userDetails?.state || "").toLowerCase();
+                    const regFee =
+                      userState === "victoria" || userState === "vic" ? 100 : 0;
+                    const baseAmount = isDiscountedPackage
+                      ? registrationData.discounted_amount
+                      : registrationData.total_amount;
+                    return (baseAmount + regFee).toFixed(2);
+                  })()}
                 </span>
               </div>
             </div>

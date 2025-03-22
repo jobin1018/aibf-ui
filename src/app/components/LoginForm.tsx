@@ -49,8 +49,6 @@ export function LoginForm() {
   };
 
   const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
-    console.log("Credential Response:", credentialResponse);
-
     if (!credentialResponse.credential) {
       console.error("No credential received");
       alert("Login failed. No credentials received.");
@@ -58,7 +56,6 @@ export function LoginForm() {
     }
 
     try {
-      console.log("Sending Google Credential:", credentialResponse.credential);
       const response = await axios.post(
         API_ENDPOINTS.GOOGLE_SIGNIN,
         { token: credentialResponse.credential },
@@ -70,7 +67,6 @@ export function LoginForm() {
       );
 
       const { data } = response;
-      console.log("Backend Login Response:", data);
 
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
@@ -85,8 +81,6 @@ export function LoginForm() {
       }
 
       const googleJwtPayload = decoded as GoogleJwtPayload;
-
-      console.log("Decoded token:", googleJwtPayload);
 
       // Store user details
       const userDetails = {
