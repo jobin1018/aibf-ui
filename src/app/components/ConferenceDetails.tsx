@@ -5,6 +5,7 @@ import aibf_25_2_poster from "../../assets/aibf_25_2.jpeg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_ENDPOINTS } from "@/constants/api";
+import { feeStructure } from "@/constants/fees";
 
 interface Event {
   id: number;
@@ -81,7 +82,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
 
     checkLoginStatus();
     window.addEventListener("storage", checkLoginStatus);
-    
+
     return () => {
       window.removeEventListener("storage", checkLoginStatus);
     };
@@ -271,105 +272,54 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                   title: "Fee Structure",
                   content: (
                     <div className="space-y-3 sm:space-y-4">
-                      {/* 4-Day Package */}
-                      <div className="space-y-2">
-                        <h4 className="font-semibold text-primary text-sm sm:text-base">
-                          4-Day Package (Thu-Sun)
-                        </h4>
-                        <div className="space-y-1 text-xs sm:text-sm">
-                          <div className="flex justify-between">
-                            <span>Adult (14+)</span>
-                            <span className="font-semibold">$340</span>
+                      {feeStructure.map((pkg) => (
+                        <div key={pkg.name} className="space-y-2">
+                          <h4 className="font-semibold text-primary text-sm sm:text-base">
+                            {pkg.name}
+                          </h4>
+                          <div className="space-y-1 text-xs sm:text-sm">
+                            {pkg.isDayVisitor ? (
+                              <>
+                                <div className="flex justify-between">
+                                  <span>Entry Fee (Per Person)</span>
+                                  <span className="font-semibold">${pkg.adultPrice}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1 mb-2">Optional Meal Prices:</p>
+                                <div className="flex justify-between">
+                                  <span>Adult (14+)</span>
+                                  <span className="font-semibold">${pkg.mealPrices?.adult}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Children (9-13)</span>
+                                  <span className="font-semibold">${pkg.mealPrices?.kids913}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Children (3-8)</span>
+                                  <span className="font-semibold">${pkg.mealPrices?.kids38}</span>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="flex justify-between">
+                                  <span>Adult (14+)</span>
+                                  <span className="font-semibold">${pkg.adultPrice}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Children (9-13)</span>
+                                  <span className="font-semibold">${pkg.child9to13Price}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Children (3-8)</span>
+                                  <span className="font-semibold">${pkg.child3to8Price}</span>
+                                </div>
+                              </>
+                            )}
                           </div>
-                          <div className="flex justify-between">
-                            <span>Children (9-13)</span>
-                            <span className="font-semibold">$255</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Children (3-8)</span>
-                            <span className="font-semibold">$170</span>
-                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {pkg.description}
+                          </p>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          Includes 3 nights accommodation & 9 meals (3*Breakfast
-                          included)
-                        </p>
-                      </div>
-
-                      {/* 3-Day Package */}
-                      <div className="space-y-2">
-                        <h4 className="font-semibold text-primary text-sm sm:text-base">
-                          3-Day Package (Fri-Sun)
-                        </h4>
-                        <div className="space-y-1 text-xs sm:text-sm">
-                          <div className="flex justify-between">
-                            <span>Adult (14+)</span>
-                            <span className="font-semibold">$250</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Children (9-13)</span>
-                            <span className="font-semibold">$190</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Children (3-8)</span>
-                            <span className="font-semibold">$130</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          Includes 2 nights accommodation & 8 meals (2*Breakfast
-                          included)
-                        </p>
-                      </div>
-
-                      {/* 2-Day Package */}
-                      <div className="space-y-2">
-                        <h4 className="font-semibold text-primary text-sm sm:text-base">
-                          2-Day Package (Sat-Sun)
-                        </h4>
-                        <div className="space-y-1 text-xs sm:text-sm">
-                          <div className="flex justify-between">
-                            <span>Adult (14+)</span>
-                            <span className="font-semibold">$135</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Children (9-13)</span>
-                            <span className="font-semibold">$105</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Children (3-8)</span>
-                            <span className="font-semibold">$70</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          Includes 1 night accommodation & 5 meals (1*Breakfast
-                          included)
-                        </p>
-                      </div>
-
-                      {/* Day Visitors */}
-                      <div className="space-y-2">
-                        <h4 className="font-semibold text-primary text-sm sm:text-base">
-                          Day Visitors
-                        </h4>
-                        <div className="space-y-1 text-xs sm:text-sm">
-                          <div className="flex justify-between">
-                            <span>Entry Fee (Per Visit)</span>
-                            <span className="font-semibold">$16</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Meal - Adult (14+)</span>
-                            <span className="font-semibold">$20</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Meal - Children (9-13)</span>
-                            <span className="font-semibold">$15</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Meal - Children (3-8)</span>
-                            <span className="font-semibold">$10</span>
-                          </div>
-                        </div>
-                      </div>
+                      ))}
 
                       {/* Additional Information */}
                       <div className="space-y-1 text-xs text-muted-foreground mt-3 sm:mt-4">
@@ -400,11 +350,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                           <span className="text-green-600 font-medium">
                             nil
                           </span>{" "}
-                          this year
-                        </p>
-                        <p>
-                          • Members can donate funds to support AIBF camp
-                          expenses
+                          for all attendees
                         </p>
                       </div>
                     </div>
@@ -463,8 +409,9 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               </Button>
               {!isLoggedIn && !isRegistered && (
                 <p className="text-sm text-muted-foreground">
-                  Please <a 
-                    href="#" 
+                  Please{" "}
+                  <a
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       window.location.href = "/login";
@@ -472,7 +419,8 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                     className="text-primary hover:text-primary/80 transition-colors"
                   >
                     login
-                  </a> to register for the conference
+                  </a>{" "}
+                  to register for the conference
                 </p>
               )}
             </div>

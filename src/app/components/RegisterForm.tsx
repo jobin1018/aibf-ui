@@ -23,7 +23,7 @@ import { Separator } from "../../components/ui/separator";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../constants/api";
 import { toast } from "../../components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
+import { PRICES, bankDetails } from "@/constants/fees";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -45,6 +45,7 @@ const formSchema = z.object({
   kids3to8Count: z.string().min(0, {
     message: "Please enter number of kids aged 3-8.",
   }),
+  includeMeals: z.boolean().optional(),
   additionalAdults: z
     .array(
       z.object({
@@ -79,40 +80,11 @@ interface RegisterFormProps {
   onSuccess?: () => void;
 }
 
-const PRICES = {
-  "4-Day Package (Thu-Sun)": {
-    adult: 340,
-    kids913: 255,
-    kids38: 170,
-  },
-  "3-Day Package (Fri-Sun)": {
-    adult: 250,
-    kids913: 190,
-    kids38: 130,
-  },
-  "2-Day Package (Sat-Sun)": {
-    adult: 135,
-    kids913: 105,
-    kids38: 70,
-  },
-  "Day Visitors": {
-    adult: 36, // Entry + 1 meal
-    kids913: 31, // Entry + 1 meal
-    kids38: 26, // Entry + 1 meal
-  },
-};
-
-const bankDetails = {
-  accountName: "AIBF",
-  bankName: "ANZ Bank",
-  accountNumber: "412910238",
-  bsb: "013 148",
-};
-
-export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
+export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
   const [eventId, setEventId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [totalAmount, setTotalAmount] = useState<number>(0);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -120,8 +92,9 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
       email: "",
       package: "",
       adultsCount: "0",
-      kids9to13Count: "",
-      kids3to8Count: "",
+      kids9to13Count: "0",
+      kids3to8Count: "0",
+      includeMeals: false,
       additionalAdults: [],
       additionalKids9to13: [],
       additionalKids3to8: [],
@@ -283,31 +256,59 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
     }
   }, [form]);
 
-  const calculateTotalFee = () => {
-    const selectedPackage = form.getValues("package");
+  const watchPackage = form.watch("package");
+  const watchAdultsCount = form.watch("adultsCount");
+  const watchKids913Count = form.watch("kids9to13Count");
+  const watchKids38Count = form.watch("kids3to8Count");
+  const watchIncludeMeals = form.watch("includeMeals");
+
+  const calculateTotalFee = (values: z.infer<typeof formSchema>) => {
+    const selectedPackage = PRICES[values.package as keyof typeof PRICES];
     if (!selectedPackage) return 0;
 
-    const packagePrices = PRICES[selectedPackage as keyof typeof PRICES];
-    if (!packagePrices) return 0;
+    // Add 1 to adultsCount for the registering user
+    const adultsCount = 1 + (parseInt(values.adultsCount) || 0);
+    const kids913Count = parseInt(values.kids9to13Count) || 0;
+    const kids38Count = parseInt(values.kids3to8Count) || 0;
 
-    const additionalAdultsCount = parseInt(
-      form.getValues("adultsCount") || "0",
-      10
-    );
-    const totalAdultsCount = 1 + additionalAdultsCount; // Base adult (1) + additional adults
+    let total = 0;
 
-    const kids9to13Count = parseInt(
-      form.getValues("kids9to13Count") || "0",
-      10
-    );
-    const kids3to8Count = parseInt(form.getValues("kids3to8Count") || "0", 10);
+    if (values.package === "Day Visitors") {
+      // Base entry fee ($16) for all attendees
+      const entryFee = selectedPackage.adult;
+      const totalPeople = adultsCount + kids913Count + kids38Count;
+      total = totalPeople * entryFee;
 
-    return (
-      totalAdultsCount * packagePrices.adult +
-      kids9to13Count * packagePrices.kids913 +
-      kids3to8Count * packagePrices.kids38
-    );
+      // Add meal costs if selected
+      if (values.includeMeals && "mealPrices" in selectedPackage) {
+        const { mealPrices } = selectedPackage;
+        total += adultsCount * mealPrices.adult;
+        total += kids913Count * mealPrices.kids913;
+        total += kids38Count * mealPrices.kids38;
+      }
+    } else {
+      // Regular package calculation
+      total =
+        adultsCount * selectedPackage.adult +
+        kids913Count * selectedPackage.kids913 +
+        kids38Count * selectedPackage.kids38;
+    }
+
+    return total;
   };
+
+  // Update total when relevant fields change
+  useEffect(() => {
+    const values = form.getValues();
+    const total = calculateTotalFee(values);
+    setTotalAmount(total);
+  }, [
+    watchPackage,
+    watchAdultsCount,
+    watchKids913Count,
+    watchKids38Count,
+    watchIncludeMeals,
+  ]);
 
   const handleRegistrationSubmit = async (
     values: z.infer<typeof formSchema>
@@ -318,28 +319,28 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
     }
 
     try {
+      const totalFee = calculateTotalFee(values);
       const registrationData = {
         event_id: eventId,
         email: values.email,
         selected_package: values.package,
-        no_of_adults: 1 + parseInt(values.adultsCount, 10),
+        no_of_adults: 1 + parseInt(values.adultsCount, 10), // Base adult (1) + additional adults
         no_of_children_9_13: parseInt(values.kids9to13Count, 10),
         no_of_children_3_8: parseInt(values.kids3to8Count, 10),
+        include_meals: values.includeMeals,
         additional_adults:
           values.additionalAdults?.map((adult) => adult.name).join(", ") || "",
         additional_kids_9_13:
           values.additionalKids9to13?.map((kid) => kid.name).join(", ") || "",
         additional_kids_3_8:
           values.additionalKids3to8?.map((kid) => kid.name).join(", ") || "",
-        totalAmount: calculateTotalFee(),
+        total_amount: totalFee,
       };
 
       // Store registration data in localStorage for payment step
       localStorage.setItem(
         "registration_data",
-        JSON.stringify({
-          ...registrationData,
-        })
+        JSON.stringify(registrationData)
       );
 
       // Move to payment tab
@@ -366,7 +367,7 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleRegistrationSubmit)}
-        className="space-y-4 sm:space-y-6"
+        className="space-y-6"
       >
         <FormField
           control={form.control}
@@ -417,6 +418,32 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
             </FormItem>
           )}
         />
+
+        {watchPackage === "Day Visitors" && (
+          <FormField
+            control={form.control}
+            name="includeMeals"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <input
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={field.onChange}
+                    className="h-4 w-4 mt-1"
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Include Meals</FormLabel>
+                  <p className="text-sm text-muted-foreground">
+                    Add meals for each attendee: Adults ($19), Children 9-13
+                    ($15), Children 3-8 ($10)
+                  </p>
+                </div>
+              </FormItem>
+            )}
+          />
+        )}
 
         <div className="space-y-3 sm:space-y-4">
           <h3 className="text-base sm:text-lg font-semibold">
@@ -588,197 +615,144 @@ export function RegisterForm({ onRegistrationComplete }: RegisterFormProps) {
           </>
         )}
 
+        <div className="mt-6 p-4 bg-muted rounded-lg">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold">Total Amount:</span>
+            <span className="text-lg font-bold">${totalAmount.toFixed(2)}</span>
+          </div>
+          {watchPackage === "Day Visitors" && (
+            <div className="text-sm text-muted-foreground mt-2">
+              <p>
+                Entry Fee: $
+                {(1 +
+                  parseInt(watchAdultsCount) +
+                  parseInt(watchKids913Count) +
+                  parseInt(watchKids38Count) || 1) * 16}
+              </p>
+              {watchIncludeMeals && (
+                <p>
+                  Meals: $
+                  {totalAmount -
+                    (1 +
+                      parseInt(watchAdultsCount) +
+                      parseInt(watchKids913Count) +
+                      parseInt(watchKids38Count) || 1) *
+                      16}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
         <Button
           type="submit"
-          className="w-full h-9 sm:h-10 text-sm sm:text-base mt-4 sm:mt-6"
+          className="w-full h-10 text-sm sm:text-base mt-6"
+          disabled={isLoading}
         >
-          Continue to Payment
+          {isLoading ? "Loading..." : "Continue to Payment"}
         </Button>
       </form>
     </Form>
   );
-}
+};
 
 interface PaymentDetailsProps {
   onSuccess?: () => void;
 }
 
-export function PaymentDetails({ onSuccess }: PaymentDetailsProps) {
-  const navigate = useNavigate();
-  const [registrationData, setRegistrationData] = useState<{
-    event_id: string;
-    email: string;
-    selected_package: string;
-    no_of_adults: number;
-    no_of_children_9_13: number;
-    no_of_children_3_8: number;
-    additional_adults: string;
-    additional_kids_9_13: string;
-    additional_kids_3_8: string;
-    totalAmount: number;
-  } | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
+  const [registrationData, setRegistrationData] = useState<any>(null);
 
   useEffect(() => {
-    const data = localStorage.getItem("registration_data");
-    if (data) {
-      setRegistrationData(JSON.parse(data));
-      console.log("registrationData", registrationData);
+    const storedData = localStorage.getItem("registration_data");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setRegistrationData(parsedData);
     }
   }, []);
 
-  const handleCompleteRegistration = async () => {
-    console.log("registrationData", registrationData);
-    if (!registrationData) return;
-
-    setIsSubmitting(true);
-    setError(null);
-
+  const handlePaymentSubmit = async () => {
     try {
-      const response = await axios.post(API_ENDPOINTS.REGISTRATION, {
-        event_id: registrationData.event_id,
-        email: registrationData.email,
-        selected_package: registrationData.selected_package,
-        no_of_adults: registrationData.no_of_adults,
-        no_of_children_9_13: registrationData.no_of_children_9_13,
-        no_of_children_3_8: registrationData.no_of_children_3_8,
-        additional_adults: registrationData.additional_adults,
-        additional_kids_9_13: registrationData.additional_kids_9_13,
-        additional_kids_3_8: registrationData.additional_kids_3_8,
-        total_amount: registrationData.totalAmount,
-      });
-
-      if (response.status === 201) {
-        // Clear registration data from localStorage
-        localStorage.removeItem("registration_data");
-        setRegistrationData(null);
-        toast({
-          title: "Success",
-          description: "Registration completed successfully!",
-        });
-        onSuccess?.();
-        navigate("/conference");
-      }
-    } catch (error: unknown) {
-      console.error("Registration submission failed:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : (error as { response?: { data?: { message?: string } } })?.response
-              ?.data?.message || "An unknown error occurred";
-      setError(errorMessage);
+      // Make payment API call here
       toast({
-        title: "Registration Failed",
-        description: errorMessage,
+        title: "Success",
+        description: "Payment processed successfully.",
+      });
+      onSuccess?.();
+    } catch (error) {
+      console.error("Payment failed:", error);
+      toast({
+        title: "Payment Failed",
+        description: "Please try again or contact support.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   if (!registrationData) {
-    return (
-      <div className="text-center py-4 sm:py-6">
-        <p className="text-sm sm:text-base text-muted-foreground">
-          No registration data found.
-        </p>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <Separator className="my-3 sm:my-4" />
-
-      <div className="space-y-4 sm:space-y-6">
-        <h3 className="text-base sm:text-lg font-semibold">Payment Details</h3>
-
-        {/* Registration Summary */}
-        <div className="bg-muted/50 rounded-lg p-4 space-y-3">
-          <h4 className="text-sm sm:text-base font-medium">
-            Registration Summary
-          </h4>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <div>
-              <p className="text-sm text-muted-foreground">Adults (14+):</p>
-              <p className="font-medium">
-                {registrationData.no_of_adults || 0}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Kids (9-13):</p>
-              <p className="font-medium">
-                {registrationData.no_of_children_9_13 || 0}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Kids (3-8):</p>
-              <p className="font-medium">
-                {registrationData.no_of_children_3_8 || 0}
-              </p>
-            </div>
-            <div className="col-span-2 sm:col-span-3 pt-2 border-t">
-              <p className="text-sm text-muted-foreground">Total Amount:</p>
-              <p className="text-lg font-semibold text-primary">
-                ${registrationData.totalAmount || 0}
-              </p>
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Payment Details</h3>
+        <div className="space-y-2">
+          <p className="text-sm">
+            Selected Package: {registrationData.selected_package}
+          </p>
+          <p className="text-sm">
+            Number of Adults: {registrationData.no_of_adults}
+          </p>
+          <p className="text-sm">
+            Children (9-13): {registrationData.no_of_children_9_13}
+          </p>
+          <p className="text-sm">
+            Children (3-8): {registrationData.no_of_children_3_8}
+          </p>
+          {registrationData.selected_package === "Day Visitors" && (
+            <p className="text-sm">
+              Meals Included: {registrationData.include_meals ? "Yes" : "No"}
+            </p>
+          )}
+          <div className="mt-4 p-4 bg-muted rounded-lg">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">Total Amount:</span>
+              <span className="text-lg font-bold">
+                ${registrationData.total_amount.toFixed(2)}
+              </span>
             </div>
           </div>
-        </div>
-
-        {/* Bank Account Details */}
-        <div className="bg-muted/50 rounded-lg p-4 space-y-3">
-          <h4 className="text-sm sm:text-base font-medium">
-            Bank Account Details
-          </h4>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-muted-foreground">Account Name</p>
-                <p className="font-medium">{bankDetails.accountName}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Bank Name</p>
-                <p className="font-medium">{bankDetails.bankName}</p>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-muted-foreground">BSB</p>
-                <p className="font-medium">{bankDetails.bsb}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Account Number</p>
-                <p className="font-medium">{bankDetails.accountNumber}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Important Notes */}
-        <div className="bg-primary/5 rounded-lg p-4 space-y-3">
-          <h4 className="text-sm sm:text-base font-medium">Important Notes</h4>
-          <ul className="list-disc list-inside space-y-1.5 text-sm text-muted-foreground">
-            <li>Transfer the total amount to the given account details.</li>
-            <li>Send your payment receipt to aibfmelb@gmail.com.</li>
-            <li>
-              Your registration will be confirmed after payment verification.
-            </li>
-          </ul>
         </div>
       </div>
 
-      {error && <div className="text-sm text-red-500 mt-4">Error: {error}</div>}
+      <div className="space-y-4">
+        <h4 className="text-base font-semibold">Bank Transfer Details</h4>
+        <div className="space-y-2 text-sm">
+          <p>Account Name: {bankDetails.accountName}</p>
+          <p>Bank Name: {bankDetails.bankName}</p>
+          <p>Account Number: {bankDetails.accountNumber}</p>
+          <p>BSB: {bankDetails.bsb}</p>
+          <div className="mt-4 p-4 bg-primary/5 rounded-lg">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                1. Please transfer the total amount ($
+                {registrationData.total_amount.toFixed(2)}) to the above
+                mentioned bank account and send the receipt to
+                aibfmelb@gmail.com
+              </p>
+              <p className="text-sm text-muted-foreground">
+                2. Click Complete Registration to finish the registration
+                process.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <Button
-        onClick={handleCompleteRegistration}
-        className="w-full h-10 text-sm sm:text-base mt-6"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Processing..." : "Complete Registration"}
+      <Button type="button" onClick={handlePaymentSubmit} className="w-full">
+        Complete Registration
       </Button>
     </div>
   );
-}
+};

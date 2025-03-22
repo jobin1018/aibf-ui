@@ -4,48 +4,7 @@ import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
-interface FeePackage {
-  name: string;
-  description: string;
-  adultPrice: number;
-  child9to13Price: number;
-  child3to8Price: number;
-}
-
-const feeStructure: FeePackage[] = [
-  {
-    name: "4-Day Package (Thu-Sun)",
-    description:
-      "Includes 3 nights accommodation & 9 meals (3*Breakfast included)",
-    adultPrice: 340,
-    child9to13Price: 255,
-    child3to8Price: 170,
-  },
-  {
-    name: "3-Day Package (Fri-Sun)",
-    description:
-      "Includes 2 nights accommodation & 8 meals (2*Breakfast included)",
-    adultPrice: 250,
-    child9to13Price: 190,
-    child3to8Price: 130,
-  },
-  {
-    name: "2-Day Package (Sat-Sun)",
-    description:
-      "Includes 1 night accommodation & 5 meals (1*Breakfast included)",
-    adultPrice: 135,
-    child9to13Price: 105,
-    child3to8Price: 70,
-  },
-  {
-    name: "Day Visitors",
-    description: "Entry and meal options for day visitors",
-    adultPrice: 36, // Entry + 1 meal
-    child9to13Price: 31, // Entry + 1 meal
-    child3to8Price: 26, // Entry + 1 meal
-  },
-];
+import { feeStructure } from "@/constants/fees";
 
 const RegisterPage = () => {
   const [activeTab, setActiveTab] = useState("registration");
