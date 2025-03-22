@@ -32,6 +32,7 @@ interface UserRegistration {
   email: string;
   phone: string;
   selected_package: string;
+  selected_meals: string;
   no_of_adults: number;
   no_of_children_9_13: number;
   no_of_children_3_8: number;
@@ -82,6 +83,7 @@ export function DashboardPage() {
         City: reg.city,
         Address: reg.address,
         Package: reg.selected_package,
+        "Selected Meals": reg.selected_meals,
         "No. of Adults": reg.no_of_adults,
         "Additional Adults": reg.additional_adults,
         "No. of Children (9-13)": reg.no_of_children_9_13,
@@ -169,6 +171,7 @@ export function DashboardPage() {
               <TableHead>City</TableHead>
               <TableHead>Address</TableHead>
               <TableHead>Package</TableHead>
+              <TableHead>Selected Meals</TableHead>
               <TableHead>No. of Adults</TableHead>
               <TableHead>Additional Adults</TableHead>
               <TableHead>No. of Children (9-13)</TableHead>
@@ -182,7 +185,7 @@ export function DashboardPage() {
           <TableBody>
             {[1, 2, 3, 4, 5].map((row) => (
               <TableRow key={row}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((cell) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((cell) => (
                   <TableCell key={cell}>
                     <div
                       className="h-4 bg-gray-200 dark:bg-gray-700 
@@ -249,6 +252,9 @@ export function DashboardPage() {
                   Package
                 </TableHead>
                 <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Selected Meals
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
                   No. of Adults
                 </TableHead>
                 <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
@@ -277,7 +283,7 @@ export function DashboardPage() {
             <TableBody>
               {[1, 2, 3, 4, 5].map((row) => (
                 <TableRow key={row}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((cell) => (
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((cell) => (
                     <TableCell key={cell}>
                       <div
                         className="h-4 bg-gray-200 dark:bg-gray-700 
@@ -313,6 +319,9 @@ export function DashboardPage() {
                 </TableHead>
                 <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
                   Package
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Selected Meals
                 </TableHead>
                 <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
                   No. of Adults
@@ -360,6 +369,9 @@ export function DashboardPage() {
                   </TableCell>
                   <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
                     {registration.selected_package}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.selected_meals}
                   </TableCell>
                   <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
                     {registration.no_of_adults}

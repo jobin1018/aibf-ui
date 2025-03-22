@@ -107,6 +107,7 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
       additionalKids9to13: [],
       additionalKids3to8: [],
     },
+    mode: "onChange",
   });
 
   const {
@@ -343,9 +344,9 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         event_id: eventId,
         email: values.email,
         selected_package: values.package,
-        adults_count: parseInt(values.adultsCount),
-        kids_9_to_13_count: parseInt(values.kids9to13Count),
-        kids_3_to_8_count: parseInt(values.kids3to8Count),
+        no_of_adults: (values.adultsCount ? parseInt(values.adultsCount) : 0) + 1, // Add 1 for the registering person
+        no_of_children_9_13: values.kids9to13Count ? parseInt(values.kids9to13Count) : 0,
+        no_of_children_3_8: values.kids3to8Count ? parseInt(values.kids3to8Count) : 0,
         selected_meals: values.selectedMeals?.join(", ") || "",
         additional_adults:
           values.additionalAdults?.map((adult) => adult.name).join(", ") || "",
@@ -491,9 +492,14 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
                     <Input
                       type="number"
                       min="0"
+                      defaultValue="0"
                       placeholder="0"
                       className="h-9 sm:h-10 text-sm sm:text-base"
                       {...field}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value === "" ? "0" : value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage className="text-xs sm:text-sm" />
@@ -512,9 +518,15 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
+                      defaultValue="0"
                       placeholder="0"
                       className="h-9 sm:h-10 text-sm sm:text-base"
                       {...field}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value === "" ? "0" : value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage className="text-xs sm:text-sm" />
@@ -533,9 +545,15 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
                   <FormControl>
                     <Input
                       type="number"
+                      min="0"
+                      defaultValue="0"
                       placeholder="0"
                       className="h-9 sm:h-10 text-sm sm:text-base"
                       {...field}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value === "" ? "0" : value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage className="text-xs sm:text-sm" />
