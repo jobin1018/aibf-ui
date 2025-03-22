@@ -337,19 +337,26 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         total_amount: totalFee,
       };
 
+      // Create registration in backend
+      const response = await axios.post(API_ENDPOINTS.REGISTRATION, registrationData);
+
+      if (!response.data) {
+        throw new Error("Failed to create registration");
+      }
+
       // Store registration data in localStorage for payment step
       localStorage.setItem(
         "registration_data",
-        JSON.stringify(registrationData)
+        JSON.stringify({ ...registrationData, id: response.data.id })
       );
 
       // Move to payment tab
       onRegistrationComplete?.();
     } catch (error) {
-      console.error("Registration validation failed:", error);
+      console.error("Registration failed:", error);
       toast({
         title: "Registration Failed",
-        description: "Please check your registration details and try again.",
+        description: error instanceof Error ? error.message : "Please check your registration details and try again.",
         variant: "destructive",
       });
     }
