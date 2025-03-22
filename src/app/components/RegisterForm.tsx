@@ -337,26 +337,19 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         total_amount: totalFee,
       };
 
-      // Create registration in backend
-      const response = await axios.post(API_ENDPOINTS.REGISTRATION, registrationData);
-
-      if (!response.data) {
-        throw new Error("Failed to create registration");
-      }
-
       // Store registration data in localStorage for payment step
       localStorage.setItem(
         "registration_data",
-        JSON.stringify({ ...registrationData, id: response.data.id })
+        JSON.stringify(registrationData)
       );
 
       // Move to payment tab
       onRegistrationComplete?.();
     } catch (error) {
-      console.error("Registration failed:", error);
+      console.error("Registration validation failed:", error);
       toast({
         title: "Registration Failed",
-        description: error instanceof Error ? error.message : "Please check your registration details and try again.",
+        description: "Please check your registration details and try again.",
         variant: "destructive",
       });
     }
@@ -680,17 +673,33 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
 
   const handlePaymentSubmit = async () => {
     try {
-      // Make payment API call here
+      const registrationData = JSON.parse(
+        localStorage.getItem("registration_data") || ""
+      );
+
+      // Create registration in backend
+      const response = await axios.post(
+        API_ENDPOINTS.REGISTRATION,
+        registrationData
+      );
+
+      if (!response.data) {
+        throw new Error("Failed to create registration");
+      }
+
       toast({
         title: "Success",
-        description: "Payment processed successfully.",
+        description: "Registration completed successfully.",
       });
       onSuccess?.();
     } catch (error) {
-      console.error("Payment failed:", error);
+      console.error("Registration failed:", error);
       toast({
-        title: "Payment Failed",
-        description: "Please try again or contact support.",
+        title: "Registration Failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Please try again or contact support.",
         variant: "destructive",
       });
     }

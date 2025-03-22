@@ -26,8 +26,8 @@ export const feeStructure: FeePackage[] = [
     description:
       "Includes 2 nights accommodation & 8 meals (2*Breakfast included)",
     adultPrice: 247,
-    child9to13Price: 174,
-    child3to8Price: 126,
+    child9to13Price: 186,
+    child3to8Price: 124,
   },
   {
     name: "2-Day Package (Sat-Sun)",
@@ -61,8 +61,8 @@ export const PRICES = {
   },
   "3-Day Package (Fri-Sun)": {
     adult: 247,
-    kids913: 174,
-    kids38: 126,
+    kids913: 186,
+    kids38: 124,
   },
   "2-Day Package (Sat-Sun)": {
     adult: 133,

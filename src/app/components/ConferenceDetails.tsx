@@ -282,35 +282,51 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                               <>
                                 <div className="flex justify-between">
                                   <span>Entry Fee (Per Person)</span>
-                                  <span className="font-semibold">${pkg.adultPrice}</span>
+                                  <span className="font-semibold">
+                                    ${pkg.adultPrice}
+                                  </span>
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1 mb-2">Optional Meal Prices:</p>
+                                <p className="text-xs text-muted-foreground mt-1 mb-2">
+                                  Optional Meal Prices:
+                                </p>
                                 <div className="flex justify-between">
                                   <span>Adult (14+)</span>
-                                  <span className="font-semibold">${pkg.mealPrices?.adult}</span>
+                                  <span className="font-semibold">
+                                    ${pkg.mealPrices?.adult}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span>Children (9-13)</span>
-                                  <span className="font-semibold">${pkg.mealPrices?.kids913}</span>
+                                  <span className="font-semibold">
+                                    ${pkg.mealPrices?.kids913}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span>Children (3-8)</span>
-                                  <span className="font-semibold">${pkg.mealPrices?.kids38}</span>
+                                  <span className="font-semibold">
+                                    ${pkg.mealPrices?.kids38}
+                                  </span>
                                 </div>
                               </>
                             ) : (
                               <>
                                 <div className="flex justify-between">
                                   <span>Adult (14+)</span>
-                                  <span className="font-semibold">${pkg.adultPrice}</span>
+                                  <span className="font-semibold">
+                                    ${pkg.adultPrice}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span>Children (9-13)</span>
-                                  <span className="font-semibold">${pkg.child9to13Price}</span>
+                                  <span className="font-semibold">
+                                    ${pkg.child9to13Price}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span>Children (3-8)</span>
-                                  <span className="font-semibold">${pkg.child3to8Price}</span>
+                                  <span className="font-semibold">
+                                    ${pkg.child3to8Price}
+                                  </span>
                                 </div>
                               </>
                             )}
@@ -322,35 +338,27 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                       ))}
 
                       {/* Additional Information */}
-                      <div className="space-y-1 text-xs text-muted-foreground mt-3 sm:mt-4">
+                      <div className="space-y-1 text-xs text-muted-foreground mt-3 sm:mt-4 text-left">
+                        <p className="font-semibold mb-2">Please Note:</p>
+                        <p>• All prices include GST.</p>
                         <p>
                           • Infants under 3 years{" "}
-                          <span className="text-green-600 font-medium">
+                          <span className="font-medium">
                             free
                           </span>{" "}
-                          for whole camp
+                          for whole camp.
                         </p>
-                        <p>• All prices include GST</p>
-                        <div className="mt-2 space-y-1">
-                          <p className="font-medium text-primary">
-                            • Check-in:{" "}
-                            <span className="text-foreground">
-                              Thursday 4:00 PM
-                            </span>
-                          </p>
-                          <p className="font-medium text-primary">
-                            • Check-out:{" "}
-                            <span className="text-foreground">
-                              Sunday 1:00 PM
-                            </span>
-                          </p>
-                        </div>
                         <p>
-                          • Registration fees are{" "}
-                          <span className="text-green-600 font-medium">
-                            nil
-                          </span>{" "}
-                          for all attendees
+                          • <span className="font-medium">No registration fees</span> are required for interstate
+                          guests.
+                        </p>
+                        <p>
+                          • Families from Victoria are required to pay a
+                          <span className="font-medium"> registration fee of $100</span>.
+                        </p>
+                        <p>
+                          • A <span className="font-medium">50% discount</span> applies to accommodation and food
+                          expenses for Package 1 and Package 2.
                         </p>
                       </div>
                     </div>
