@@ -116,7 +116,10 @@ export function DashboardPage() {
     }
   };
 
-  const handlePaymentStatusChange = async (registrationId: string, newStatus: boolean) => {
+  const handlePaymentStatusChange = async (
+    registrationId: string,
+    newStatus: boolean
+  ) => {
     try {
       await axios.patch(
         `${API_ENDPOINTS.REGISTRATION}${registrationId}/`,
@@ -129,9 +132,11 @@ export function DashboardPage() {
       );
 
       // Update local state
-      setRegistrations(prevRegistrations =>
-        prevRegistrations.map(reg =>
-          reg.id === registrationId ? { ...reg, payment_status: newStatus } : reg
+      setRegistrations((prevRegistrations) =>
+        prevRegistrations.map((reg) =>
+          reg.id === registrationId
+            ? { ...reg, payment_status: newStatus }
+            : reg
         )
       );
 
@@ -204,9 +209,16 @@ export function DashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-        <h1 className="text-xl md:text-2xl font-bold">AIBF 2025 - Registered Users</h1>
+        <h1 className="text-xl md:text-2xl font-bold">
+          AIBF 2025 - Registered Users
+        </h1>
         {registrations.length > 0 && (
-          <Button onClick={handleExport} variant="outline" size="sm" className="w-full md:w-auto">
+          <Button
+            onClick={handleExport}
+            variant="outline"
+            size="sm"
+            className="w-full md:w-auto"
+          >
             <Download className="md:mr-2 h-4 w-4" />
             <span className="hidden md:inline">Export to Excel</span>
           </Button>
@@ -218,20 +230,48 @@ export function DashboardPage() {
             <TableCaption>No registrations found</TableCaption>
             <TableHeader className="bg-gray-50 dark:bg-gray-800">
               <TableRow>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Name</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Email</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Phone</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">City</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Address</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Package</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Adults</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Adults</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (9-13)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (3-8)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (9-13)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (3-8)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Registration Date</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Payment Status</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Name
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Email
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Phone
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  City
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Address
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Package
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  No. of Adults
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Additional Adults
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  No. of Children (9-13)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  No. of Children (3-8)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Additional Kids (9-13)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Additional Kids (3-8)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Registration Date
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Payment Status
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -256,40 +296,94 @@ export function DashboardPage() {
             <TableCaption>List of Registered Users</TableCaption>
             <TableHeader className="bg-gray-50 dark:bg-gray-800">
               <TableRow>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Name</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Email</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Phone</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">City</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Address</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Package</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Adults</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Adults</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (9-13)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">No. of Children (3-8)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (9-13)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Additional Kids (3-8)</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Registration Date</TableHead>
-                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">Payment Status</TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Name
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Email
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Phone
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  City
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Address
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Package
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  No. of Adults
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Additional Adults
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  No. of Children (9-13)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  No. of Children (3-8)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Additional Kids (9-13)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Additional Kids (3-8)
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Registration Date
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Payment Status
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {registrations.map((registration) => (
                 <TableRow key={registration.id}>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.user_name}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.email}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.phone}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.city}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.address}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.selected_package}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.no_of_adults}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.additional_adults}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.no_of_children_9_13}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.no_of_children_3_8}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.additional_kids_9_13}</TableCell>
-                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">{registration.additional_kids_3_8}</TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.user_name}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.email}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.phone}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.city}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.address}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.selected_package}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.no_of_adults}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.additional_adults}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.no_of_children_9_13}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.no_of_children_3_8}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.additional_kids_9_13}
+                  </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                    {registration.additional_kids_3_8}
+                  </TableCell>
                   <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
                     {registration.registration_date
-                      ? new Date(registration.registration_date).toLocaleDateString("en-US", {
+                      ? new Date(
+                          registration.registration_date
+                        ).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: window.innerWidth < 768 ? "short" : "long",
                           day: "numeric",
@@ -303,9 +397,13 @@ export function DashboardPage() {
                           variant="ghost"
                           className="h-8 w-full justify-start p-0 font-normal"
                         >
-                          <Badge 
-                            className="text-xs md:text-sm cursor-pointer" 
-                            variant={registration.payment_status ? "success" : "destructive"}
+                          <Badge
+                            className="text-xs md:text-sm cursor-pointer"
+                            variant={
+                              registration.payment_status
+                                ? "success"
+                                : "destructive"
+                            }
                           >
                             {registration.payment_status ? "Paid" : "Pending"}
                           </Badge>
@@ -313,14 +411,18 @@ export function DashboardPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
-                          onClick={() => handlePaymentStatusChange(registration.id, true)}
+                          onClick={() =>
+                            handlePaymentStatusChange(registration.id, true)
+                          }
                           className="text-green-600"
                         >
                           <Check className="mr-2 h-4 w-4" />
                           Mark as Paid
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handlePaymentStatusChange(registration.id, false)}
+                          onClick={() =>
+                            handlePaymentStatusChange(registration.id, false)
+                          }
                           className="text-red-600"
                         >
                           <X className="mr-2 h-4 w-4" />

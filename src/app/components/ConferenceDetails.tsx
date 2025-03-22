@@ -366,6 +366,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                           applies to accommodation and food expenses for Package
                           1 and Package 2.
                         </p>
+                        <p>
+                          • Check in Time{" "}
+                          <span className="font-medium">Thursday 4:00 PM</span>{" "}
+                          and Check out Time{" "}
+                          <span className="font-medium">Sunday 1:00 PM</span>.
+                        </p>
                       </div>
                     </div>
                   ),

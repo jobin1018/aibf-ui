@@ -45,7 +45,7 @@ const formSchema = z.object({
   kids3to8Count: z.string().min(0, {
     message: "Please enter number of kids aged 3-8.",
   }),
-  includeMeals: z.boolean().optional(),
+  selectedMeals: z.array(z.enum(["breakfast", "lunch", "dinner"])).optional(),
   additionalAdults: z
     .array(
       z.object({
@@ -80,6 +80,14 @@ interface RegisterFormProps {
   onSuccess?: () => void;
 }
 
+const MealType = {
+  BREAKFAST: "breakfast",
+  LUNCH: "lunch",
+  DINNER: "dinner",
+} as const;
+
+type MealType = (typeof MealType)[keyof typeof MealType];
+
 export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
   const [eventId, setEventId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -94,7 +102,7 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
       adultsCount: "0",
       kids9to13Count: "0",
       kids3to8Count: "0",
-      includeMeals: false,
+      selectedMeals: [],
       additionalAdults: [],
       additionalKids9to13: [],
       additionalKids3to8: [],
@@ -260,7 +268,7 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
   const watchAdultsCount = form.watch("adultsCount");
   const watchKids913Count = form.watch("kids9to13Count");
   const watchKids38Count = form.watch("kids3to8Count");
-  const watchIncludeMeals = form.watch("includeMeals");
+  const watchSelectedMeals = form.watch("selectedMeals");
 
   const calculateTotalFee = (values: z.infer<typeof formSchema>) => {
     const selectedPackage = PRICES[values.package as keyof typeof PRICES];
@@ -280,11 +288,14 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
       total = totalPeople * entryFee;
 
       // Add meal costs if selected
-      if (values.includeMeals && "mealPrices" in selectedPackage) {
+      if (values.selectedMeals?.length && "mealPrices" in selectedPackage) {
         const { mealPrices } = selectedPackage;
-        total += adultsCount * mealPrices.adult;
-        total += kids913Count * mealPrices.kids913;
-        total += kids38Count * mealPrices.kids38;
+        const mealCount = values.selectedMeals.length;
+
+        // Multiply full meal price by number of meals selected
+        total += adultsCount * mealPrices.adult * mealCount;
+        total += kids913Count * mealPrices.kids913 * mealCount;
+        total += kids38Count * mealPrices.kids38 * mealCount;
       }
     } else {
       // Regular package calculation
@@ -299,15 +310,22 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
 
   // Update total when relevant fields change
   useEffect(() => {
-    const values = form.getValues();
-    const total = calculateTotalFee(values);
+    const total = calculateTotalFee({
+      package: watchPackage,
+      adultsCount: watchAdultsCount,
+      kids9to13Count: watchKids913Count,
+      kids3to8Count: watchKids38Count,
+      selectedMeals: watchSelectedMeals,
+      email: "",
+    });
     setTotalAmount(total);
   }, [
+    calculateTotalFee,
     watchPackage,
     watchAdultsCount,
     watchKids913Count,
     watchKids38Count,
-    watchIncludeMeals,
+    watchSelectedMeals,
   ]);
 
   const handleRegistrationSubmit = async (
@@ -320,14 +338,15 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
 
     try {
       const totalFee = calculateTotalFee(values);
+      console.log("values", values);
       const registrationData = {
         event_id: eventId,
         email: values.email,
         selected_package: values.package,
-        no_of_adults: 1 + parseInt(values.adultsCount, 10), // Base adult (1) + additional adults
-        no_of_children_9_13: parseInt(values.kids9to13Count, 10),
-        no_of_children_3_8: parseInt(values.kids3to8Count, 10),
-        include_meals: values.includeMeals,
+        adults_count: parseInt(values.adultsCount),
+        kids_9_to_13_count: parseInt(values.kids9to13Count),
+        kids_3_to_8_count: parseInt(values.kids3to8Count),
+        selected_meals: values.selectedMeals?.join(", ") || "",
         additional_adults:
           values.additionalAdults?.map((adult) => adult.name).join(", ") || "",
         additional_kids_9_13:
@@ -422,23 +441,33 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         {watchPackage === "Day Visitors" && (
           <FormField
             control={form.control}
-            name="includeMeals"
+            name="selectedMeals"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <input
-                    type="checkbox"
-                    checked={field.value}
-                    onChange={field.onChange}
-                    className="h-4 w-4 mt-1"
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Include Meals</FormLabel>
-                  <p className="text-sm text-muted-foreground">
-                    Add meals for each attendee: Adults ($19), Children 9-13
-                    ($15), Children 3-8 ($10)
-                  </p>
+              <FormItem className="space-y-2">
+                <FormLabel>Select Meals</FormLabel>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Cost per meal: Adults ($19), Children 9-13 ($15), Children 3-8
+                  ($10)
+                </p>
+                <div className="flex flex-col space-y-2">
+                  {[MealType.BREAKFAST, MealType.LUNCH, MealType.DINNER].map(
+                    (meal) => (
+                      <div key={meal} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={field.value?.includes(meal)}
+                          onChange={(e) => {
+                            const updatedMeals = e.target.checked
+                              ? [...(field.value || []), meal]
+                              : (field.value || []).filter((m) => m !== meal);
+                            field.onChange(updatedMeals);
+                          }}
+                          className="h-4 w-4"
+                        />
+                        <span className="text-sm capitalize">{meal}</span>
+                      </div>
+                    )
+                  )}
                 </div>
               </FormItem>
             )}
@@ -627,16 +656,17 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
                 {(1 +
                   parseInt(watchAdultsCount) +
                   parseInt(watchKids913Count) +
-                  parseInt(watchKids38Count) || 1) * 16}
+                  parseInt(watchKids38Count)) *
+                  16}
               </p>
-              {watchIncludeMeals && (
+              {(watchSelectedMeals ?? []).length > 0 && (
                 <p>
                   Meals: $
                   {totalAmount -
                     (1 +
                       parseInt(watchAdultsCount) +
                       parseInt(watchKids913Count) +
-                      parseInt(watchKids38Count) || 1) *
+                      parseInt(watchKids38Count)) *
                       16}
                 </p>
               )}
@@ -728,7 +758,7 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
           </p>
           {registrationData.selected_package === "Day Visitors" && (
             <p className="text-sm">
-              Meals Included: {registrationData.include_meals ? "Yes" : "No"}
+              Meals Included: {registrationData.selected_meals}
             </p>
           )}
           <div className="mt-4 p-4 bg-muted rounded-lg">
