@@ -898,25 +898,25 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
           )}
           <div className="mt-4 p-4 bg-muted rounded-lg">
             <div className="flex flex-col space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <span>Original Amount:</span>
+                <span
+                  className={isDiscountedPackage ? "line-through" : ""}
+                >
+                  ${registrationData.original_amount.toFixed(2)}
+                </span>
+              </div>
               {isDiscountedPackage && (
-                <>
-                  <div className="flex justify-between items-center text-sm">
-                    <span>Original Amount:</span>
-                    <span className="line-through">
-                      ${registrationData.original_amount.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm text-green-600">
-                    <span>Discount (50%):</span>
-                    <span>
-                      -$
-                      {(
-                        registrationData.original_amount -
-                        registrationData.discounted_amount
-                      ).toFixed(2)}
-                    </span>
-                  </div>
-                </>
+                <div className="flex justify-between items-center text-sm text-green-600">
+                  <span>Discount (50%):</span>
+                  <span>
+                    -$
+                    {(
+                      registrationData.original_amount -
+                      registrationData.discounted_amount
+                    ).toFixed(2)}
+                  </span>
+                </div>
               )}
               {(() => {
                 const userDetails = JSON.parse(
