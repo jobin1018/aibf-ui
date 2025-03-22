@@ -376,6 +376,9 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         additional_kids_3_8:
           values.additionalKids3to8?.map((kid) => kid.name).join(", ") || "",
         total_amount: totalFee,
+        total_fee: values.package === "4-Day Package (Thu-Sun)" || values.package === "3-Day Package (Fri-Sun)" 
+          ? totalFee * 0.5  // Apply 50% discount for 3-day and 4-day packages
+          : totalFee,  // No discount for other packages
       };
 
       // Store registration data in localStorage for payment step
@@ -739,7 +742,10 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
       const parsedData = JSON.parse(storedData);
 
       // Calculate discounted amount for 3-day and 4-day packages
-      if (parsedData.selected_package === "3-Day Package (Fri-Sun)" || parsedData.selected_package === "4-Day Package (Thu-Sun)") {
+      if (
+        parsedData.selected_package === "3-Day Package (Fri-Sun)" ||
+        parsedData.selected_package === "4-Day Package (Thu-Sun)"
+      ) {
         const originalAmount = parsedData.total_amount;
         const discountedAmount = originalAmount * 0.5; // 50% discount
         parsedData.discounted_amount = discountedAmount;
@@ -759,7 +765,10 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
       );
 
       // If it's a 3-day or 4-day package, use the discounted amount
-      if (registrationData.selected_package === "3-Day Package (Fri-Sun)" || registrationData.selected_package === "4-Day Package (Thu-Sun)") {
+      if (
+        registrationData.selected_package === "3-Day Package (Fri-Sun)" ||
+        registrationData.selected_package === "4-Day Package (Thu-Sun)"
+      ) {
         registrationData.total_amount = registrationData.total_amount * 0.5;
       }
 
@@ -797,7 +806,9 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
     return null;
   }
 
-  const isDiscountedPackage = registrationData.selected_package === "3-Day Package (Fri-Sun)" || registrationData.selected_package === "4-Day Package (Thu-Sun)";
+  const isDiscountedPackage =
+    registrationData.selected_package === "3-Day Package (Fri-Sun)" ||
+    registrationData.selected_package === "4-Day Package (Thu-Sun)";
 
   return (
     <div className="space-y-6">
@@ -827,18 +838,30 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
                 <>
                   <div className="flex justify-between items-center text-sm">
                     <span>Original Amount:</span>
-                    <span className="line-through">${registrationData.original_amount.toFixed(2)}</span>
+                    <span className="line-through">
+                      ${registrationData.original_amount.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center text-sm text-green-600">
                     <span>Discount (50%):</span>
-                    <span>-${(registrationData.original_amount - registrationData.discounted_amount).toFixed(2)}</span>
+                    <span>
+                      -$
+                      {(
+                        registrationData.original_amount -
+                        registrationData.discounted_amount
+                      ).toFixed(2)}
+                    </span>
                   </div>
                 </>
               )}
               <div className="flex justify-between items-center pt-2 border-t">
                 <span className="font-semibold">Final Amount:</span>
                 <span className="text-lg font-bold">
-                  ${(isDiscountedPackage ? registrationData.discounted_amount : registrationData.total_amount).toFixed(2)}
+                  $
+                  {(isDiscountedPackage
+                    ? registrationData.discounted_amount
+                    : registrationData.total_amount
+                  ).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -856,9 +879,13 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
           <div className="mt-4 p-4 bg-primary/5 rounded-lg">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                1. Please transfer the {isDiscountedPackage ? 'discounted ' : ''}amount ($
-                {(isDiscountedPackage ? registrationData.discounted_amount : registrationData.total_amount).toFixed(2)}) to the above
-                mentioned bank account and send the receipt to
+                1. Please transfer the{" "}
+                {isDiscountedPackage ? "discounted " : ""}amount ($
+                {(isDiscountedPackage
+                  ? registrationData.discounted_amount
+                  : registrationData.total_amount
+                ).toFixed(2)}
+                ) to the above mentioned bank account and send the receipt to
                 aibfmelb@gmail.com
               </p>
               <p className="text-sm text-muted-foreground">

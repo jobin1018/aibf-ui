@@ -13,13 +13,14 @@ import { toast } from "@/components/ui/use-toast";
 import { API_ENDPOINTS } from "@/constants/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Download, Check, X } from "lucide-react";
+import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
 // Define the type for user registration
@@ -41,6 +42,8 @@ interface UserRegistration {
   additional_kids_3_8: string;
   registration_date: string;
   payment_status: boolean;
+  total_amount: number;
+  total_fee: number;
 }
 
 export function DashboardPage() {
@@ -98,6 +101,8 @@ export function DashboardPage() {
             })
           : "N/A",
         "Payment Status": reg.payment_status ? "Paid" : "Pending",
+        "Total Amount": reg.total_amount,
+        "Total Fee": reg.total_fee,
       }));
 
       const ws = XLSX.utils.json_to_sheet(exportData);
@@ -118,7 +123,7 @@ export function DashboardPage() {
     }
   };
 
-  const handlePaymentStatusChange = async (
+  const handleStatusChange = async (
     registrationId: string,
     newStatus: boolean
   ) => {
@@ -179,20 +184,24 @@ export function DashboardPage() {
               <TableHead>Additional Kids (9-13)</TableHead>
               <TableHead>Additional Kids (3-8)</TableHead>
               <TableHead>Registration Date</TableHead>
+              <TableHead>Total Fee</TableHead>
               <TableHead>Payment Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {[1, 2, 3, 4, 5].map((row) => (
               <TableRow key={row}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((cell) => (
-                  <TableCell key={cell}>
-                    <div
-                      className="h-4 bg-gray-200 dark:bg-gray-700 
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(
+                  (cell) => (
+                    <TableCell key={cell}>
+                      <div
+                        className="h-4 bg-gray-200 dark:bg-gray-700 
                       rounded w-full animate-pulse"
-                    />
-                  </TableCell>
-                ))}
+                      />
+                    </TableCell>
+                  )
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -276,6 +285,9 @@ export function DashboardPage() {
                   Registration Date
                 </TableHead>
                 <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Total Fee
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
                   Payment Status
                 </TableHead>
               </TableRow>
@@ -283,14 +295,16 @@ export function DashboardPage() {
             <TableBody>
               {[1, 2, 3, 4, 5].map((row) => (
                 <TableRow key={row}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((cell) => (
-                    <TableCell key={cell}>
-                      <div
-                        className="h-4 bg-gray-200 dark:bg-gray-700 
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(
+                    (cell) => (
+                      <TableCell key={cell}>
+                        <div
+                          className="h-4 bg-gray-200 dark:bg-gray-700 
                         rounded w-full animate-pulse"
-                      />
-                    </TableCell>
-                  ))}
+                        />
+                      </TableCell>
+                    )
+                  )}
                 </TableRow>
               ))}
             </TableBody>
@@ -343,6 +357,9 @@ export function DashboardPage() {
                 </TableHead>
                 <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
                   Registration Date
+                </TableHead>
+                <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
+                  Total Fee
                 </TableHead>
                 <TableHead className="px-2 md:px-4 py-2 text-xs md:text-sm">
                   Payment Status
@@ -402,6 +419,9 @@ export function DashboardPage() {
                         })
                       : "N/A"}
                   </TableCell>
+                  <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm text-green-600 font-medium">
+                    ${Number(registration.total_fee || 0).toFixed(2)}
+                  </TableCell>
                   <TableCell className="px-2 md:px-4 py-2 text-xs md:text-sm">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -422,22 +442,19 @@ export function DashboardPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
                           onClick={() =>
-                            handlePaymentStatusChange(registration.id, true)
+                            handleStatusChange(registration.id, true)
                           }
-                          className="text-green-600"
                         >
-                          <Check className="mr-2 h-4 w-4" />
                           Mark as Paid
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() =>
-                            handlePaymentStatusChange(registration.id, false)
+                            handleStatusChange(registration.id, false)
                           }
-                          className="text-red-600"
                         >
-                          <X className="mr-2 h-4 w-4" />
                           Mark as Pending
                         </DropdownMenuItem>
                       </DropdownMenuContent>
