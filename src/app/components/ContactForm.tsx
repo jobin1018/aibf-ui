@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Container from "@/components/ui/Container";
-import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { API_ENDPOINTS } from "@/constants/api";
 
@@ -30,7 +29,7 @@ export function ContactForm() {
     message: "",
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null;
     message: string;
@@ -85,7 +84,9 @@ export function ContactForm() {
           <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-1.5 sm:space-y-2">
-                <Label htmlFor="name" className="text-sm">Name</Label>
+                <Label htmlFor="name" className="text-sm">
+                  Name
+                </Label>
                 <Input
                   id="name"
                   name="name"
@@ -93,12 +94,14 @@ export function ContactForm() {
                   onChange={handleChange}
                   placeholder="Your name"
                   required
-                  disabled={isSubmitting}
+                  disabled={true}
                   className="h-9 sm:h-10 text-sm sm:text-base"
                 />
               </div>
               <div className="space-y-1.5 sm:space-y-2">
-                <Label htmlFor="email" className="text-sm">Email</Label>
+                <Label htmlFor="email" className="text-sm">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   name="email"
@@ -107,13 +110,15 @@ export function ContactForm() {
                   onChange={handleChange}
                   placeholder="your.email@example.com"
                   required
-                  disabled={isSubmitting}
+                  disabled={true}
                   className="h-9 sm:h-10 text-sm sm:text-base"
                 />
               </div>
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="subject" className="text-sm">Subject</Label>
+              <Label htmlFor="subject" className="text-sm">
+                Subject
+              </Label>
               <Input
                 id="subject"
                 name="subject"
@@ -121,12 +126,14 @@ export function ContactForm() {
                 onChange={handleChange}
                 placeholder="What is this regarding?"
                 required
-                disabled={isSubmitting}
+                disabled={true}
                 className="h-9 sm:h-10 text-sm sm:text-base"
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="message" className="text-sm">Message</Label>
+              <Label htmlFor="message" className="text-sm">
+                Message
+              </Label>
               <Textarea
                 id="message"
                 name="message"
@@ -135,7 +142,7 @@ export function ContactForm() {
                 placeholder="Your message here..."
                 className="min-h-[120px] sm:min-h-[150px] resize-y text-sm sm:text-base py-2"
                 required
-                disabled={isSubmitting}
+                disabled={true}
               />
             </div>
             {submitStatus.message && (
@@ -149,19 +156,13 @@ export function ContactForm() {
                 {submitStatus.message}
               </div>
             )}
-            <Button 
-              type="submit" 
-              className="w-full h-9 sm:h-10 text-sm sm:text-base" 
-              disabled={isSubmitting}
+            <Button
+              type="submit"
+              className="w-full h-9 sm:h-10 text-sm sm:text-base"
+              disabled={true}
+              title="This feature is not available at the moment"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                "Send Message"
-              )}
+              Send Message
             </Button>
           </form>
         </CardContent>

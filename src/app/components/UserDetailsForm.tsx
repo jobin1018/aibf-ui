@@ -6,7 +6,7 @@ import { API_ENDPOINTS } from "@/constants/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import React from "react";
+import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
 
 const userFormSchema = z.object({
@@ -45,11 +45,14 @@ export default function UserDetailsForm({
   isUpdate = false,
   userId,
 }: UserDetailsFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
@@ -61,18 +64,75 @@ export default function UserDetailsForm({
     },
   });
 
-  // Ensure email is always set in the form
-  React.useEffect(() => {
-    setValue("email", email);
+  useEffect(() => {
+    const initializeForm = async () => {
+      try {
+        setIsLoading(true);
+        // Get registration data from localStorage if not in update mode
+        if (!isUpdate) {
+          const registrationData = localStorage.getItem("registration_data");
+          if (registrationData) {
+            const parsedData = JSON.parse(registrationData);
+            if (parsedData.email) {
+              setValue("email", parsedData.email);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error initializing form:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeForm();
+  }, [isUpdate, setValue]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (!isUpdate || !userId || !token) return;
+
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`${API_ENDPOINTS.USERS}/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const userData = response.data;
+        setValue("name", userData.name);
+        setValue("email", userData.email);
+        setValue("phone", userData.phone);
+        setValue("city", userData.city);
+        setValue("address", userData.address);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load user details",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, [isUpdate, userId, token, setValue]);
+
+  useEffect(() => {
+    if (email) {
+      setValue("email", email);
+    }
   }, [email, setValue]);
 
   const onSubmit = async (data: UserFormData) => {
-    if (!token) {
-      alert("Missing authentication details. Please log in again.");
-      return;
-    }
-
     try {
+      setIsSubmitting(true);
+      if (!token) {
+        alert("Missing authentication details. Please log in again.");
+        return;
+      }
+
       if (isUpdate && userId) {
         // Update existing profile
         await axios.patch(
@@ -125,8 +185,57 @@ export default function UserDetailsForm({
           : "Failed to create profile",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="space-y-4">
+          {/* Name field skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Email field skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Phone field skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Address field skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* City field skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* State field skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+        </div>
+
+        {/* Submit button skeleton */}
+        <div className="h-10 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -180,7 +289,16 @@ export default function UserDetailsForm({
         )}
       </div>
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isUpdate ? "Update Profile" : "Complete Profile"}
+        {isSubmitting ? (
+          <>
+            <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-2 border-t-gray-500 rounded-full" />
+            {isUpdate ? "Updating Profile..." : "Completing Profile..."}
+          </>
+        ) : isUpdate ? (
+          "Update Profile"
+        ) : (
+          "Complete Profile"
+        )}
       </Button>
     </form>
   );

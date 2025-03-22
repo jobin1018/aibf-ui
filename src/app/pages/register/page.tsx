@@ -94,12 +94,12 @@ const RegisterPage = () => {
                   <h2 className="text-lg sm:text-xl font-semibold">
                     Registration Information
                   </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    Please fill in the details of all attendees.
-                  </p>
-                  <RegisterForm
-                    onRegistrationComplete={handleRegistrationComplete}
-                  />
+                  <div className="space-y-4">
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      Please fill in the details of all attendees.
+                    </p>
+                    <RegisterForm onRegistrationComplete={handleRegistrationComplete} />
+                  </div>
                 </div>
               </TabsContent>
 

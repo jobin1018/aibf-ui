@@ -173,13 +173,20 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
 
   useEffect(() => {
     const fetchLatestEventAsync = async () => {
-      const eventId = await fetchLatestEvent();
-      if (eventId) {
-        setEventId(eventId);
-      } else {
-        setError("No events found");
+      setIsLoading(true);
+      try {
+        const eventId = await fetchLatestEvent();
+        if (eventId) {
+          setEventId(eventId);
+        } else {
+          setError("No events found");
+        }
+      } catch (error) {
+        console.error("Error fetching latest event:", error);
+        setError("Failed to fetch event details");
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchLatestEventAsync();
@@ -376,9 +383,11 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         additional_kids_3_8:
           values.additionalKids3to8?.map((kid) => kid.name).join(", ") || "",
         total_amount: totalFee,
-        total_fee: values.package === "4-Day Package (Thu-Sun)" || values.package === "3-Day Package (Fri-Sun)" 
-          ? totalFee * 0.5  // Apply 50% discount for 3-day and 4-day packages
-          : totalFee,  // No discount for other packages
+        total_fee:
+          values.package === "4-Day Package (Thu-Sun)" ||
+          values.package === "3-Day Package (Fri-Sun)"
+            ? totalFee * 0.5 // Apply 50% discount for 3-day and 4-day packages
+            : totalFee, // No discount for other packages
       };
 
       // Store registration data in localStorage for payment step
@@ -400,11 +409,52 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="space-y-6">
+        <div className="space-y-4">
+          {/* Email field skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Package selection skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Adults count skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Children count skeletons */}
+          <div className="space-y-2">
+            <div className="h-4 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Meals selection skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+        </div>
+
+        {/* Submit button skeleton */}
+        <div className="h-10 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-red-500">{error}</div>;
   }
 
   return (
