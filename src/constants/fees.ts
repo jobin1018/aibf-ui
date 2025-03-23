@@ -14,7 +14,7 @@ export interface FeePackage {
 
 export const feeStructure: FeePackage[] = [
   {
-    name: "4-Day Package (Thu-Sun)",
+    name: "Package 1 (Thu-Sun)",
     description:
       "Includes 3 nights accommodation & 9 meals (3*Breakfast included)",
     adultPrice: 338,
@@ -22,7 +22,7 @@ export const feeStructure: FeePackage[] = [
     child3to8Price: 169,
   },
   {
-    name: "3-Day Package (Fri-Sun)",
+    name: "Package 2 (Fri-Sun)",
     description:
       "Includes 2 nights accommodation & 8 meals (2*Breakfast included)",
     adultPrice: 247,
@@ -30,7 +30,7 @@ export const feeStructure: FeePackage[] = [
     child3to8Price: 124,
   },
   {
-    name: "2-Day Package (Sat-Sun)",
+    name: "Package 3  (Sat-Sun)",
     description:
       "Includes 1 night accommodation & 5 meals (1*Breakfast included)",
     adultPrice: 133,
@@ -54,17 +54,17 @@ export const feeStructure: FeePackage[] = [
 
 // For easier lookup in RegisterForm
 export const PRICES = {
-  "4-Day Package (Thu-Sun)": {
+  "Package 1 (Thu-Sun)": {
     adult: 338,
     kids913: 254,
     kids38: 169,
   },
-  "3-Day Package (Fri-Sun)": {
+  "Package 2 (Fri-Sun)": {
     adult: 247,
     kids913: 186,
     kids38: 124,
   },
-  "2-Day Package (Sat-Sun)": {
+  "Package 3 (Sat-Sun)": {
     adult: 133,
     kids913: 102,
     kids38: 68,

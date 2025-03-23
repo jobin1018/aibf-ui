@@ -384,8 +384,8 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         total_amount: totalFee,
         original_amount: totalFee,
         discounted_amount:
-          values.package === "4-Day Package (Thu-Sun)" ||
-          values.package === "3-Day Package (Fri-Sun)"
+          values.package === "Package 1 (Thu-Sun)" ||
+          values.package === "Package 2 (Fri-Sun)"
             ? totalFee * 0.5
             : totalFee,
         total_fee: (() => {
@@ -396,8 +396,8 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
           const regFee =
             userState === "victoria" || userState === "vic" ? 100 : 0;
           const baseAmount =
-            values.package === "4-Day Package (Thu-Sun)" ||
-            values.package === "3-Day Package (Fri-Sun)"
+            values.package === "Package 1 (Thu-Sun)" ||
+            values.package === "Package 2 (Fri-Sun)"
               ? totalFee * 0.5 // Apply 50% discount for 3-day and 4-day packages
               : totalFee; // No discount for other packages
           const finalAmount = baseAmount + regFee;
@@ -511,14 +511,14 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white dark:bg-gray-950 z-50 text-sm sm:text-base">
-                  <SelectItem value="4-Day Package (Thu-Sun)">
-                    4-Day Package (Thu-Sun)
+                  <SelectItem value="Package 1 (Thu-Sun)">
+                    Package 1 (Thu-Sun)
                   </SelectItem>
-                  <SelectItem value="3-Day Package (Fri-Sun)">
-                    3-Day Package (Fri-Sun)
+                  <SelectItem value="Package 2 (Fri-Sun)">
+                    Package 2 (Fri-Sun)
                   </SelectItem>
-                  <SelectItem value="2-Day Package (Sat-Sun)">
-                    2-Day Package (Sat-Sun)
+                  <SelectItem value="Package 3 (Sat-Sun)">
+                    Package 3 (Sat-Sun)
                   </SelectItem>
                   <SelectItem value="Day Visitors">Day Visitors</SelectItem>
                 </SelectContent>
@@ -808,8 +808,8 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
 
       // Calculate discounted amount for 3-day and 4-day packages
       if (
-        parsedData.selected_package === "3-Day Package (Fri-Sun)" ||
-        parsedData.selected_package === "4-Day Package (Thu-Sun)"
+        parsedData.selected_package === "Package 1 (Thu-Sun)" ||
+        parsedData.selected_package === "Package 2 (Fri-Sun)"
       ) {
         const originalAmount = parsedData.total_amount;
         const discountedAmount = originalAmount * 0.5; // 50% discount
@@ -831,8 +831,8 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
 
       // If it's a 3-day or 4-day package, use the discounted amount
       if (
-        registrationData.selected_package === "3-Day Package (Fri-Sun)" ||
-        registrationData.selected_package === "4-Day Package (Thu-Sun)"
+        registrationData.selected_package === "Package 1 (Thu-Sun)" ||
+        registrationData.selected_package === "Package 2 (Fri-Sun)"
       ) {
         registrationData.total_amount = registrationData.total_amount * 0.5;
       }
@@ -872,8 +872,8 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
   }
 
   const isDiscountedPackage =
-    registrationData.selected_package === "3-Day Package (Fri-Sun)" ||
-    registrationData.selected_package === "4-Day Package (Thu-Sun)";
+    registrationData.selected_package === "Package 1 (Thu-Sun)" ||
+    registrationData.selected_package === "Package 2 (Fri-Sun)";
 
   return (
     <div className="space-y-6">
@@ -901,9 +901,7 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
             <div className="flex flex-col space-y-2">
               <div className="flex justify-between items-center text-sm">
                 <span>Original Amount:</span>
-                <span
-                  className={isDiscountedPackage ? "line-through" : ""}
-                >
+                <span className={isDiscountedPackage ? "line-through" : ""}>
                   ${registrationData.original_amount.toFixed(2)}
                 </span>
               </div>
@@ -969,8 +967,7 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
                 1. Please transfer the amount ($
                 {registrationData.payment_status
                   ? registrationData.total_fee.toFixed(2)
-                  : registrationData.total_fee.toFixed(2)
-                }
+                  : registrationData.total_fee.toFixed(2)}
                 ) to the above mentioned bank account and send the receipt to
                 aibfmelb@gmail.com
               </p>
