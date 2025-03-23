@@ -3,15 +3,21 @@ import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { API_ENDPOINTS } from "@/constants/api";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, ChevronDown } from "lucide-react";
 import * as XLSX from "xlsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   DropdownMenuLabel,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Define the type for user registration
 interface UserRegistration {
@@ -471,48 +477,62 @@ export function DashboardPage() {
                       </span>
                     </td>
                     <td className="sticky right-0 z-20 bg-white dark:bg-gray-950 px-6 py-4 whitespace-nowrap text-sm shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[180px]">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant={
-                              registration.payment_status
-                                ? "default"
-                                : "destructive"
-                            }
-                            size="sm"
-                            className={`cursor-pointer ${
-                              registration.payment_status
-                                ? "bg-green-600 hover:bg-green-700 text-white"
-                                : ""
-                            }`}
-                          >
-                            {registration.payment_status ? "Paid" : "Pending"}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg">
-                          <DropdownMenuLabel className="font-medium border-b border-gray-200 dark:border-gray-800">
-                            Change Payment Status
-                          </DropdownMenuLabel>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              handleStatusChange(registration.id, true)
-                            }
-                            className="cursor-pointer hover:bg-green-50 dark:hover:bg-green-950 flex items-center gap-2 focus:bg-green-50 dark:focus:bg-green-950"
-                          >
-                            <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                            Mark as Paid
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              handleStatusChange(registration.id, false)
-                            }
-                            className="cursor-pointer hover:bg-red-50 dark:hover:bg-red-950 flex items-center gap-2 focus:bg-red-50 dark:focus:bg-red-950"
-                          >
-                            <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                            Mark as Pending
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant={
+                                    registration.payment_status
+                                      ? "default"
+                                      : "destructive"
+                                  }
+                                  size="sm"
+                                  className={`cursor-pointer text-sm px-3 py-1 h-auto group ${
+                                    registration.payment_status
+                                      ? "bg-green-600 hover:bg-green-700 text-white"
+                                      : ""
+                                  }`}
+                                >
+                                  <span>
+                                    {registration.payment_status
+                                      ? "Paid"
+                                      : "Pending"}
+                                  </span>
+                                  <ChevronDown className="h-3 w-3 ml-1 opacity-70 group-hover:opacity-100" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent className="w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg">
+                                <DropdownMenuLabel className="font-medium border-b border-gray-200 dark:border-gray-800">
+                                  Change Payment Status
+                                </DropdownMenuLabel>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(registration.id, true)
+                                  }
+                                  className="cursor-pointer hover:bg-green-50 dark:hover:bg-green-950 flex items-center gap-2 focus:bg-green-50 dark:focus:bg-green-950"
+                                >
+                                  <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                                  Mark as Paid
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(registration.id, false)
+                                  }
+                                  className="cursor-pointer hover:bg-red-50 dark:hover:bg-red-950 flex items-center gap-2 focus:bg-red-50 dark:focus:bg-red-950"
+                                >
+                                  <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                                  Mark as Pending
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom">
+                            Click to edit payment status
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </td>
                   </tr>
                 ))}
