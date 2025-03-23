@@ -40,6 +40,7 @@ interface UserRegistration {
   payment_status: boolean;
   total_amount: number;
   total_fee: number;
+  state: string;
 }
 
 export function DashboardPage() {
@@ -79,8 +80,9 @@ export function DashboardPage() {
         Name: reg.user_name,
         Email: reg.email,
         Phone: reg.phone,
+        Street: reg.address,
         City: reg.city,
-        Address: reg.address,
+        State: reg.state,
         Package: reg.selected_package,
         "Selected Meals": reg.selected_meals,
         "No. of Adults": reg.no_of_adults,
@@ -176,10 +178,13 @@ export function DashboardPage() {
                     Phone
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    Street
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     City
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Address
+                    State
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Package
@@ -204,9 +209,6 @@ export function DashboardPage() {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Additional Kids (3-8)
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Registration Date
                   </th>
                   <th className="sticky right-[180px] z-30 bg-gray-50 dark:bg-gray-800 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px]">
                     Total Fee
@@ -293,10 +295,13 @@ export function DashboardPage() {
                     Phone
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    Street
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     City
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Address
+                    State
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Package
@@ -321,9 +326,6 @@ export function DashboardPage() {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Additional Kids (3-8)
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Registration Date
                   </th>
                   <th className="sticky right-[180px] z-30 bg-gray-50 dark:bg-gray-800 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px]">
                     Total Fee
@@ -380,10 +382,13 @@ export function DashboardPage() {
                     Phone
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    Street
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     City
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Address
+                    State
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Package
@@ -409,9 +414,6 @@ export function DashboardPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Additional Kids (3-8)
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Registration Date
-                  </th>
                   <th className="sticky right-[180px] z-30 bg-gray-50 dark:bg-gray-800 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px]">
                     Total Fee
                   </th>
@@ -429,14 +431,17 @@ export function DashboardPage() {
                     <td className="sticky left-[150px] z-20 bg-white dark:bg-gray-950 px-6 py-4 whitespace-nowrap text-sm shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[200px]">
                       {registration.email}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm min-w-[120px]">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {registration.phone}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {registration.address}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {registration.city}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {registration.address}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm uppercase">
+                      {registration.state}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {registration.selected_package}
@@ -461,15 +466,6 @@ export function DashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {registration.additional_kids_3_8}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {new Date(
-                        registration.registration_date
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
                     </td>
                     <td className="sticky right-[180px] z-20 bg-white dark:bg-gray-950 px-6 py-4 whitespace-nowrap text-sm shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px] font-medium">
                       <span className="bg-primary/10 text-primary px-2 py-1 rounded">

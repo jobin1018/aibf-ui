@@ -8,14 +8,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const userFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().min(1, "Email is required"),
+  email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
   address: z.string().min(1, "Address is required"),
   city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
+  state: z.string().min(1, "State is required").refine((value) => {
+    return AUSTRALIAN_STATES.some((state) => state.value === value);
+  }, "Please select a valid state"),
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
@@ -32,6 +41,17 @@ interface UserDetailsFormProps {
   isUpdate?: boolean;
   userId?: number;
 }
+
+const AUSTRALIAN_STATES = [
+  { value: "NSW", label: "New South Wales" },
+  { value: "VIC", label: "Victoria" },
+  { value: "QLD", label: "Queensland" },
+  { value: "WA", label: "Western Australia" },
+  { value: "SA", label: "South Australia" },
+  { value: "TAS", label: "Tasmania" },
+  { value: "ACT", label: "Australian Capital Territory" },
+  { value: "NT", label: "Northern Territory" },
+];
 
 export default function UserDetailsForm({
   email,
@@ -104,6 +124,7 @@ export default function UserDetailsForm({
         setValue("phone", userData.phone);
         setValue("city", userData.city);
         setValue("address", userData.address);
+        setValue("state", userData.state);
       } catch (error) {
         console.error("Error fetching user details:", error);
         toast({
@@ -229,10 +250,10 @@ export default function UserDetailsForm({
             <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
             <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
           </div>
-        </div>
 
-        {/* Submit button skeleton */}
-        <div className="h-10 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+          {/* Submit button skeleton */}
+          <div className="h-10 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+        </div>
       </div>
     );
   }
@@ -255,6 +276,9 @@ export default function UserDetailsForm({
           disabled
           className="opacity-50"
         />
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="phone">Phone Number</Label>
@@ -283,7 +307,25 @@ export default function UserDetailsForm({
       </div>
       <div className="space-y-2">
         <Label htmlFor="state">State</Label>
-        <Input id="state" {...register("state")} placeholder="State" />
+        <Select
+          onValueChange={(value) => setValue("state", value)}
+          defaultValue={state}
+        >
+          <SelectTrigger className="bg-white dark:bg-gray-950">
+            <SelectValue placeholder="Select your state" />
+          </SelectTrigger>
+          <SelectContent className="bg-white dark:bg-gray-950">
+            {AUSTRALIAN_STATES.map((state) => (
+              <SelectItem
+                key={state.value}
+                value={state.value}
+                className="hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {state.label} ({state.value})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors.state && (
           <p className="text-sm text-red-500">{errors.state.message}</p>
         )}
