@@ -400,7 +400,8 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
             values.package === "3-Day Package (Fri-Sun)"
               ? totalFee * 0.5 // Apply 50% discount for 3-day and 4-day packages
               : totalFee; // No discount for other packages
-          return baseAmount + regFee;
+          const finalAmount = baseAmount + regFee;
+          return parseFloat(finalAmount.toFixed(2));
         })(),
       };
 
@@ -965,12 +966,11 @@ export const PaymentDetails = ({ onSuccess }: PaymentDetailsProps) => {
           <div className="mt-4 p-4 bg-primary/5 rounded-lg">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                1. Please transfer the{" "}
-                {isDiscountedPackage ? "discounted " : ""}amount ($
-                {(isDiscountedPackage
-                  ? registrationData.discounted_amount
-                  : registrationData.total_amount
-                ).toFixed(2)}
+                1. Please transfer the amount ($
+                {registrationData.payment_status
+                  ? registrationData.total_fee.toFixed(2)
+                  : registrationData.total_fee.toFixed(2)
+                }
                 ) to the above mentioned bank account and send the receipt to
                 aibfmelb@gmail.com
               </p>
