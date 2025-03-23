@@ -94,7 +94,7 @@ export default function UserDetailsForm({
 
       try {
         setIsLoading(true);
-        const response = await axios.get(`${API_ENDPOINTS.USERS}/${userId}`, {
+        const response = await axios.get(`${API_ENDPOINTS.USERS}${userId}/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -41,6 +41,30 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
   const [isRegistered, setIsRegistered] = useState(false);
   const [daysToEvent, setDaysToEvent] = useState<number | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hasCompleteProfile, setHasCompleteProfile] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+
+  const checkProfileCompleteness = (userDetails: any) => {
+    return !!(
+      userDetails?.city &&
+      userDetails?.state &&
+      userDetails?.address &&
+      userDetails?.phone
+    );
+  };
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.USERS}${userId}/`);
+      const userDetails = response.data;
+      setHasCompleteProfile(checkProfileCompleteness(userDetails));
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      setHasCompleteProfile(false);
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
 
   const fetchLatestEvent = async () => {
     try {
@@ -49,6 +73,15 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
         ? JSON.parse(userDetailsString)
         : null;
       const userEmail = userDetails?.email;
+      const userId = userDetails?.id;
+
+      setIsLoggedIn(!!userEmail);
+
+      if (userId) {
+        fetchUserProfile(userId);
+      } else {
+        setIsLoadingProfile(false);
+      }
 
       const params: { latest?: boolean; email?: string } = { latest: true };
       if (userEmail) {
@@ -333,10 +366,11 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                           </div>
                           <p className="text-xs text-muted-foreground">
                             {pkg.description}
-                            {(pkg.name === "4-Day Package (Thu-Sun)" || 
+                            {(pkg.name === "4-Day Package (Thu-Sun)" ||
                               pkg.name === "3-Day Package (Fri-Sun)") && (
                               <span className="text-xs text-green-600 block mt-1 italic">
-                                50% Discount Offer: Applied automatically on the total amount at checkout!
+                                50% Discount Offer: Applied automatically on the
+                                total amount at checkout!
                               </span>
                             )}
                           </p>
@@ -419,12 +453,26 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               <Button
                 onClick={onRegisterClick}
                 className="w-full lg:w-2/3 h-9 sm:h-10 text-sm sm:text-base group"
-                disabled={isRegistered || !isLoggedIn}
+                disabled={
+                  isRegistered ||
+                  !isLoggedIn ||
+                  (isLoggedIn && !hasCompleteProfile)
+                }
               >
                 {isRegistered ? (
                   <>
                     Already Registered
                     <Check className="ml-2 h-4 w-4 text-green-500" />
+                  </>
+                ) : !isLoggedIn ? (
+                  <>
+                    Register Now
+                    <ArrowRight className="ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
+                  </>
+                ) : !hasCompleteProfile ? (
+                  <>
+                    Complete Profile to Register
+                    <ArrowRight className="ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </>
                 ) : (
                   <>
@@ -449,6 +497,21 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                   to register for the conference
                 </p>
               )}
+              {isLoggedIn &&
+                !isRegistered &&
+                !hasCompleteProfile &&
+                !isLoadingProfile && (
+                  <p className="text-sm text-muted-foreground">
+                    Please{" "}
+                    <a
+                      href="/profile"
+                      className="text-primary hover:text-primary/80 transition-colors"
+                    >
+                      update your profile
+                    </a>{" "}
+                    with required details to register
+                  </p>
+                )}
             </div>
 
             {/* Registration Success Message */}
