@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { API_ENDPOINTS } from "@/constants/api";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
@@ -214,28 +213,28 @@ export function DashboardPage() {
               <tbody className="bg-white dark:bg-gray-950 divide-y divide-gray-200 dark:divide-gray-800">
                 {[1, 2, 3, 4, 5].map((row) => (
                   <tr key={row}>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(
-                      (cell) => (
-                        <td
-                          key={cell}
-                          className={`px-6 py-4 whitespace-nowrap text-sm ${
-                            cell === 1
-                              ? "sticky left-0 z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[150px]"
-                              : cell === 2
-                              ? "sticky left-[150px] z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[200px]"
-                              : cell === 15
-                              ? "sticky right-[180px] z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px]"
-                              : cell === 16
-                              ? "sticky right-0 z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[180px]"
-                              : cell === 3
-                              ? "min-w-[120px]"
-                              : ""
-                          }`}
-                        >
-                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse" />
-                        </td>
-                      )
-                    )}
+                    {[
+                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                    ].map((cell) => (
+                      <td
+                        key={cell}
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          cell === 1
+                            ? "sticky left-0 z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[150px]"
+                            : cell === 2
+                            ? "sticky left-[150px] z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[200px]"
+                            : cell === 15
+                            ? "sticky right-[180px] z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px]"
+                            : cell === 16
+                            ? "sticky right-0 z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[180px]"
+                            : cell === 3
+                            ? "min-w-[120px]"
+                            : ""
+                        }`}
+                      >
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse" />
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -331,28 +330,28 @@ export function DashboardPage() {
               <tbody className="bg-white dark:bg-gray-950 divide-y divide-gray-200 dark:divide-gray-800">
                 {[1, 2, 3].map((row) => (
                   <tr key={row}>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(
-                      (cell) => (
-                        <td
-                          key={cell}
-                          className={`px-6 py-4 whitespace-nowrap text-sm ${
-                            cell === 1
-                              ? "sticky left-0 z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[150px]"
-                              : cell === 2
-                              ? "sticky left-[150px] z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[200px]"
-                              : cell === 15
-                              ? "sticky right-[180px] z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px]"
-                              : cell === 16
-                              ? "sticky right-0 z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[180px]"
-                              : cell === 3
-                              ? "min-w-[120px]"
-                              : ""
-                          }`}
-                        >
-                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse" />
-                        </td>
-                      )
-                    )}
+                    {[
+                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                    ].map((cell) => (
+                      <td
+                        key={cell}
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          cell === 1
+                            ? "sticky left-0 z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[150px]"
+                            : cell === 2
+                            ? "sticky left-[150px] z-20 bg-white dark:bg-gray-950 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[200px]"
+                            : cell === 15
+                            ? "sticky right-[180px] z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px]"
+                            : cell === 16
+                            ? "sticky right-0 z-20 bg-white dark:bg-gray-950 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[180px]"
+                            : cell === 3
+                            ? "min-w-[120px]"
+                            : ""
+                        }`}
+                      >
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse" />
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -458,14 +457,13 @@ export function DashboardPage() {
                       {registration.additional_kids_3_8}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {new Date(registration.registration_date).toLocaleDateString(
-                        "en-US",
-                        {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        }
-                      )}
+                      {new Date(
+                        registration.registration_date
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     </td>
                     <td className="sticky right-[180px] z-20 bg-white dark:bg-gray-950 px-6 py-4 whitespace-nowrap text-sm shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] min-w-[120px] font-medium">
                       <span className="bg-primary/10 text-primary px-2 py-1 rounded">
@@ -476,24 +474,38 @@ export function DashboardPage() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            variant={registration.payment_status ? "default" : "destructive"}
+                            variant={
+                              registration.payment_status
+                                ? "default"
+                                : "destructive"
+                            }
                             size="sm"
-                            className={`cursor-pointer ${registration.payment_status ? "bg-green-600 hover:bg-green-700 text-white" : ""}`}
+                            className={`cursor-pointer ${
+                              registration.payment_status
+                                ? "bg-green-600 hover:bg-green-700 text-white"
+                                : ""
+                            }`}
                           >
                             {registration.payment_status ? "Paid" : "Pending"}
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg">
-                          <DropdownMenuLabel className="font-medium border-b border-gray-200 dark:border-gray-800">Change Payment Status</DropdownMenuLabel>
+                          <DropdownMenuLabel className="font-medium border-b border-gray-200 dark:border-gray-800">
+                            Change Payment Status
+                          </DropdownMenuLabel>
                           <DropdownMenuItem
-                            onClick={() => handleStatusChange(registration.id, true)}
+                            onClick={() =>
+                              handleStatusChange(registration.id, true)
+                            }
                             className="cursor-pointer hover:bg-green-50 dark:hover:bg-green-950 flex items-center gap-2 focus:bg-green-50 dark:focus:bg-green-950"
                           >
                             <span className="h-2 w-2 rounded-full bg-green-500"></span>
                             Mark as Paid
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleStatusChange(registration.id, false)}
+                            onClick={() =>
+                              handleStatusChange(registration.id, false)
+                            }
                             className="cursor-pointer hover:bg-red-50 dark:hover:bg-red-950 flex items-center gap-2 focus:bg-red-50 dark:focus:bg-red-950"
                           >
                             <span className="h-2 w-2 rounded-full bg-red-500"></span>
