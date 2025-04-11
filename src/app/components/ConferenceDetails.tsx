@@ -43,6 +43,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasCompleteProfile, setHasCompleteProfile] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isRegistrationClosed,] = useState(true);
 
   const checkProfileCompleteness = (userDetails: any) => {
     return !!(
@@ -449,7 +450,46 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
             </div>
 
             {/* Register Button */}
-            <div className="flex flex-col items-center gap-3">
+             <div className="flex flex-col items-center gap-3">
+              <Button
+                onClick={onRegisterClick}
+                className="w-full lg:w-2/3 h-9 sm:h-10 text-sm sm:text-base group"
+                disabled={
+                  isRegistrationClosed ||
+                  isRegistered ||
+                  !isLoggedIn ||
+                  (isLoggedIn && !hasCompleteProfile)
+                }
+              >
+                {isRegistrationClosed ? (
+                  <>
+                    Registration Closed
+                    <Check className="ml-2 h-4 w-4 text-destructive" />
+                  </>
+                ) : isRegistered ? (
+                  <>
+                    Already Registered
+                    <Check className="ml-2 h-4 w-4 text-green-500" />
+                  </>
+                ) : !isLoggedIn ? (
+                  <>
+                    Register Now
+                    <ArrowRight className="ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
+                  </>
+                ) : !hasCompleteProfile ? (
+                  <>
+                    Complete Profile to Register
+                    <ArrowRight className="ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </>
+                ) : (
+                  <>
+                    Register Now
+                    <ArrowRight className="ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </>
+                )}
+              </Button>
+              </div>
+{/*             <div className="flex flex-col items-center gap-3">
               <Button
                 onClick={onRegisterClick}
                 className="w-full lg:w-2/3 h-9 sm:h-10 text-sm sm:text-base group"
@@ -512,7 +552,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                     with required details to register
                   </p>
                 )}
-            </div>
+            </div> */}
 
             {/* Registration Success Message */}
             {isRegistered && (
