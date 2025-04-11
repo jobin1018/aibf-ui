@@ -43,7 +43,6 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasCompleteProfile, setHasCompleteProfile] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
-  const [isRegistrationClosed, ] = useState(true);
 
   const checkProfileCompleteness = (userDetails: any) => {
     return !!(
@@ -56,7 +55,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const response = await axios.get(${API_ENDPOINTS.USERS}${userId}/);
+      const response = await axios.get(`${API_ENDPOINTS.USERS}${userId}/`);
       const userDetails = response.data;
       setHasCompleteProfile(checkProfileCompleteness(userDetails));
     } catch (error) {
@@ -253,7 +252,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
             >
               <img
                 src={event.poster_url || aibf_25_2_poster}
-                alt={${event.name}}
+                alt={`${event.name}`}
                 className="w-full h-full object-cover 
                 transform transition-transform duration-300 
                 group-hover:scale-110"
@@ -420,14 +419,14 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               ].map((item, index) => (
                 <div
                   key={index}
-                  className={bg-card border rounded-lg sm:rounded-xl p-3 sm:p-4 
+                  className={`bg-card border rounded-lg sm:rounded-xl p-3 sm:p-4 
                   hover:shadow-md transition-all duration-300 
                   hover:border-primary/50 group
                   ${
                     item.title === "Fee Structure"
                       ? "col-span-1 sm:col-span-2"
                       : ""
-                  }}
+                  }`}
                 >
                   <div className="flex items-center space-x-3 sm:space-x-4">
                     <div
@@ -455,19 +454,12 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                 onClick={onRegisterClick}
                 className="w-full lg:w-2/3 h-9 sm:h-10 text-sm sm:text-base group"
                 disabled={
-                  isRegistrationClosed ||
                   isRegistered ||
                   !isLoggedIn ||
                   (isLoggedIn && !hasCompleteProfile)
                 }
               >
-                {isRegistrationClosed ? (
-                    <>
-                      Registration Closed
-                      <Check className="ml-2 h-4 w-4 text-destructive" />
-                    </>
-                   )
-                 : isRegistered ? (
+                {isRegistered ? (
                   <>
                     Already Registered
                     <Check className="ml-2 h-4 w-4 text-green-500" />
