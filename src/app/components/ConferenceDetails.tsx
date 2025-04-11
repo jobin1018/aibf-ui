@@ -453,13 +453,10 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
               <Button
                 onClick={onRegisterClick}
                 className="w-full lg:w-2/3 h-9 sm:h-10 text-sm sm:text-base group"
-                disabled={
-                  isRegistered ||
-                  !isLoggedIn ||
-                  (isLoggedIn && !hasCompleteProfile)
-                }
+                disabled={true}
               >
-                {isRegistered ? (
+                Registration Closed
+                {/* {isRegistered ? (
                   <>
                     Already Registered
                     <Check className="ml-2 h-4 w-4 text-green-500" />
@@ -479,9 +476,13 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                     Register Now
                     <ArrowRight className="ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
                   </>
-                )}
+                )} */}
               </Button>
-              {!isLoggedIn && !isRegistered && (
+              <p className="text-sm text-muted-foreground">
+                We're sorry, but we've reached full capacity. Camp registration
+                is now closed for this year.
+              </p>
+              {/* {!isLoggedIn && !isRegistered && (
                 <p className="text-sm text-muted-foreground">
                   Please{" "}
                   <a
@@ -511,7 +512,7 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
                     </a>{" "}
                     with required details to register
                   </p>
-                )}
+                )} */}
             </div>
 
             {/* Registration Success Message */}
