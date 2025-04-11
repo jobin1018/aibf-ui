@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/Container";
-import { Calendar, MapPin, ArrowRight, DollarSign, Check } from "lucide-react";
+import { Calendar, MapPin, DollarSign } from "lucide-react";
 import aibf_25_2_poster from "../../assets/aibf_25_2.jpeg";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -40,9 +40,9 @@ export const ConferenceDetails: React.FC<ConferenceDetailsProps> = ({
   const [loading, setLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
   const [daysToEvent, setDaysToEvent] = useState<number | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [hasCompleteProfile, setHasCompleteProfile] = useState(false);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [, setIsLoggedIn] = useState(false);
+  const [, setHasCompleteProfile] = useState(false);
+  const [, setIsLoadingProfile] = useState(true);
 
   const checkProfileCompleteness = (userDetails: any) => {
     return !!(
