@@ -784,7 +784,7 @@ export const RegisterForm = ({ onRegistrationComplete }: RegisterFormProps) => {
         <Button
           type="submit"
           className="w-full h-10 text-sm sm:text-base mt-6"
-          disabled={isLoading}
+          disabled={true}
         >
           {isLoading ? "Loading..." : "Continue to Payment"}
         </Button>
